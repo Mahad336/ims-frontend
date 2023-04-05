@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Box, Heading, Flex, Spacer, Button } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/customizeableTable/CustomizeableTable";
@@ -58,13 +59,15 @@ const Complaints: React.FC = () => {
         <Flex>
           <Heading size="md">Complaints</Heading>
           <Spacer></Spacer>
-          <Button
-            leftIcon={<AiOutlinePlus />}
-            colorScheme="green"
-            variant="solid"
-          >
-            Add
-          </Button>
+          <Link to="create">
+            <Button
+              leftIcon={<AiOutlinePlus />}
+              colorScheme="green"
+              variant="solid"
+            >
+              Add
+            </Button>
+          </Link>
         </Flex>
         <CustomizeableTable
           heads={heads}

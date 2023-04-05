@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Heading, Flex, Spacer, Button } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/customizeableTable/CustomizeableTable";
+import { Link } from "react-router-dom";
 
 interface Item {
   id: number;
@@ -58,13 +59,15 @@ const Admins: React.FC = () => {
         <Flex>
           <Heading size="md">Admins</Heading>
           <Spacer></Spacer>
-          <Button
-            leftIcon={<AiOutlinePlus />}
-            colorScheme="green"
-            variant="solid"
-          >
-            Add
-          </Button>
+          <Link to="create">
+            <Button
+              leftIcon={<AiOutlinePlus />}
+              colorScheme="green"
+              variant="solid"
+            >
+              Add
+            </Button>
+          </Link>
         </Flex>
         <CustomizeableTable
           heads={heads}

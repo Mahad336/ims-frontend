@@ -1,7 +1,19 @@
+html{
+    background-color: rgb(240, 240, 240);
+}
+
 body {
  overflow-y: visible;
+
+
 }
 .App{
-    padding: "40px 70px";
-    background: "lightGray";
+    padding: 40px 70px;
+    background-color: rgb(240, 240, 240);
+    
 }
+/* Style the file input element */
+input[type="file"] {
+    display: none;
+}
+

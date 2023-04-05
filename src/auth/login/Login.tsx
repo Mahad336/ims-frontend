@@ -15,7 +15,7 @@ import logo from "../../assets/logo.png";
 const LoginPage = () => {
   return (
     <Flex
-      height="100vh"
+      height="80vh"
       width="full"
       align="center"
       justifyContent="center"
