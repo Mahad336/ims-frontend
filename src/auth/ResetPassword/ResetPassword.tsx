@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import {
   Box,
   Flex,
@@ -13,6 +13,32 @@ import {
 import logo from "../../assets/logo.png";
 
 const ResetPassword: FC = () => {
+  const [formData, setFormData] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState("");
+  const [isError, setIsError] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setIsError(true);
+      return;
+    }
+
+    console.log(formData); // Replace with your Axios PUT request logic
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.name);
+    setIsError(false);
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  };
+
   return (
     <Flex
       overflowY="hidden"
@@ -44,36 +70,45 @@ const ResetPassword: FC = () => {
         rounded=" 2xl"
       >
         <Text as="b" fontSize="3xl">
-          Welcome Back!
+          Reset Password
         </Text>
         <Text fontSize="xs" color="gray.500">
-          Enter your credentials to access your account
+          Enter your new password
         </Text>
 
         <Box p={4}>
-          <form>
-            <FormControl>
-              <FormLabel fontSize={"xs"} color="gray.600">
-                Email
-              </FormLabel>
-              <Input type="password" placeholder="Enter Password" />
-            </FormControl>
+          <form onSubmit={handleSubmit}>
             <FormControl mt={6}>
               <FormLabel fontSize={"xs"} color="gray.600">
                 Password
               </FormLabel>
-              <Input type="password" placeholder="Re-Enter password" />
+              <Input
+                type="password"
+                name="password"
+                placeholder="Enter Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              />
             </FormControl>
             <FormControl mt={6}>
               <FormLabel fontSize={"xs"} color="gray.600">
-                OTP
+                Confirm Password
               </FormLabel>
               <Input
-                type="number"
-                placeholder="Enter OTP received on your email"
+                type="password"
+                name="confirmPassword"
+                placeholder="Re-Enter password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                required
               />
             </FormControl>
+
+            {isError && <Text color="red">{error}</Text>}
+
             <Button
+              type="submit"
               colorScheme="green"
               variant="solid"
               width="full"
@@ -85,12 +120,6 @@ const ResetPassword: FC = () => {
           </form>
         </Box>
       </Box>
-      <Text fontSize="sm" mt={14}>
-        OTP not Received ?{" "}
-        <Link color="teal.500" href="reset">
-          Resend
-        </Link>
-      </Text>
     </Flex>
   );
 };

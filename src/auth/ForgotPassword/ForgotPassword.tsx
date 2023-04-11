@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC, useState } from "react";
 import {
   Box,
   Flex,
@@ -12,7 +12,19 @@ import {
 } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
 
-const ForgotPassword = () => {
+const ForgotPassword: FC = () => {
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = { email };
+    console.log(data);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
   return (
     <Flex
       overflowY="hidden"
@@ -46,27 +58,26 @@ const ForgotPassword = () => {
         <Text as="b" fontSize="3xl">
           Forgot Password?
         </Text>
-        <Text
-          pt={3}
-          fontSize="xs"
-          color="gray.500"
-          maxW="xs"
-          margin="auto
-        "
-        >
+        <Text pt={3} fontSize="xs" color="gray.500" maxW="xs" margin="auto">
           Enter below your email and a verification code will be sent to your
           email
         </Text>
 
         <Box p={4}>
-          <form>
-            <FormControl>
+          <form onSubmit={handleSubmit}>
+            <FormControl isRequired>
               <FormLabel fontSize={"xs"} color="gray.600">
                 Email
               </FormLabel>
-              <Input type="email" placeholder="Enter email" />
+              <Input
+                type="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={handleEmailChange}
+              />
             </FormControl>
             <Button
+              type="submit"
               colorScheme="green"
               variant="solid"
               width="full"
