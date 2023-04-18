@@ -84,7 +84,7 @@ const CustomizeableTable: React.FC<TableProps> = ({
 
   return (
     <>
-      <Flex align="center" py={3} gap={5}>
+      <Flex align="center" gap={5}>
         {filterable && (
           <InputGroup w={300}>
             <InputLeftElement children={<Icon as={FaSearch} />} />
@@ -129,7 +129,7 @@ const CustomizeableTable: React.FC<TableProps> = ({
         />
       </Flex> */}
 
-      <TableContainer rounded="md">
+      <TableContainer rounded="md" border={"1px"} borderColor="gray.300">
         <Table>
           <Thead bg="blue.500">
             <Tr>
@@ -143,17 +143,18 @@ const CustomizeableTable: React.FC<TableProps> = ({
           <Tbody>
             {filteredDataWithSelectFilters.map((item, index) => (
               <Tr key={index}>
-                {heads.map((head) => (
-                  <Td key={head} fontSize="small">
-                    {head === "Action" ? (
-                      <Link as={RouterLink} color="blue.400" to={`${item.id}`}>
-                        View
-                      </Link>
-                    ) : (
-                      item[head]
-                    )}
+                {Object.keys(item).map((key) => (
+                  <Td key={key} fontSize="small">
+                    {item.hasOwnProperty(key) ? item[key] : ""}
                   </Td>
                 ))}
+                {heads.includes("Action") && (
+                  <Td key="Action" fontSize="small">
+                    <Link as={RouterLink} color="blue.400" to={`${item.id}`}>
+                      View
+                    </Link>
+                  </Td>
+                )}
               </Tr>
             ))}
           </Tbody>

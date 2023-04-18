@@ -48,7 +48,7 @@ export const SubcategoryTable = ({ subCategories }: SubCategoryTableProps) => (
             <Td>{subCategory.unassigned}</Td>
             <Td>{subCategory.faulty}</Td>
             <Td color="blue.400">
-              {<Link to={`/subcategories/${subCategory.id}`}>View</Link>}
+              {<Link to={`/categories/${subCategory.id}`}>View</Link>}
             </Td>
           </Tr>
         ))}

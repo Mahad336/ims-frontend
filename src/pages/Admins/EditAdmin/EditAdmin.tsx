@@ -11,7 +11,7 @@ import {
   Box,
   Heading,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import CredentialForm from "../../../components/Form/CredentialsForm/CredentialForm";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
@@ -31,7 +31,10 @@ const organizations: Organization[] = [
   { id: 6, name: "Computers" },
 ];
 
-const CreateAdmin = () => {
+const EditAdmin = () => {
+  const { id } = useParams();
+  console.log(id);
+
   const [name, setName] = useState<string>("");
   const [organization, setOrganization] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -63,12 +66,12 @@ const CreateAdmin = () => {
           spacing={8}
         >
           <FormToolbar
-            backButtonLink="/requests"
-            pageTitle="Create New Admin"
+            backButtonLink={"/requests/" + id}
+            pageTitle="Edit Admin"
           />
 
           <ImageUpload
-            name={"Admin Profile Picture"}
+            name={"Admins's Profile Pic"}
             onImageChange={(e) => setImage(e.target.files?.[0])}
           />
 
@@ -109,4 +112,4 @@ const CreateAdmin = () => {
   );
 };
 
-export default CreateAdmin;
+export default EditAdmin;

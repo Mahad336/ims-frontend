@@ -93,13 +93,28 @@ const Complaints: React.FC = () => {
           <Tabs
             onChange={handleTabChange}
             orientation="vertical"
-            variant="enclosed"
+            variant="none"
             width="100%"
-            isFitted
           >
-            <TabList my={9}>
-              <Tab>Employees</Tab>
-              <Tab>Submitted</Tab>
+            <TabList my={9} gap={2}>
+              <Tab
+                textAlign={"start"}
+                rounded={"lg"}
+                _selected={{ bg: "blue.500", color: "white" }}
+                fontSize="sm"
+                pr={85}
+              >
+                Employees
+              </Tab>
+              <Tab
+                textAlign={"start"}
+                rounded={"lg"}
+                _selected={{ bg: "blue.500", color: "white" }}
+                fontSize="sm"
+                pr={85}
+              >
+                Submitted
+              </Tab>
             </TabList>
 
             <TabPanels>

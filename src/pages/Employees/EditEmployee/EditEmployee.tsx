@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -11,29 +11,32 @@ import {
   Box,
   Heading,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import CredentialForm from "../../../components/Form/CredentialsForm/CredentialForm";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 
-type Organization = {
+type Department = {
   id: number;
   name: string;
 };
 
-const organizations: Organization[] = [
-  { id: 1, name: "Furniture" },
-  { id: 2, name: "Tables" },
-  { id: 3, name: "Chairs" },
-  { id: 4, name: "Electronics" },
-  { id: 5, name: "Phones" },
-  { id: 6, name: "Computers" },
+const departments: Department[] = [
+  { id: 1, name: "Development" },
+  { id: 2, name: "QA" },
+  { id: 3, name: "Sales" },
+  { id: 4, name: "Research" },
+  { id: 5, name: "Artifical Intelligence" },
+  { id: 6, name: "Human Resource" },
 ];
 
-const CreateAdmin = () => {
+const EditEmployee: FC = () => {
+  const { id } = useParams();
+  console.log(id);
+
   const [name, setName] = useState<string>("");
-  const [organization, setOrganization] = useState<string>("");
+  const [department, setDepartment] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [contact, setContact] = useState<string>("");
@@ -63,12 +66,12 @@ const CreateAdmin = () => {
           spacing={8}
         >
           <FormToolbar
-            backButtonLink="/requests"
-            pageTitle="Create New Admin"
+            backButtonLink={"/employees/" + id}
+            pageTitle="Edit Employee"
           />
 
           <ImageUpload
-            name={"Admin Profile Picture"}
+            name={"Employee's Picture"}
             onImageChange={(e) => setImage(e.target.files?.[0])}
           />
 
@@ -80,12 +83,12 @@ const CreateAdmin = () => {
           />
 
           <CustomInput
-            label="Organization"
-            value={organization}
-            placeholder="Select Organization"
+            label="Department"
+            value={department}
+            placeholder="Select Department"
             type="select"
-            options={organizations}
-            setValue={setOrganization}
+            options={departments}
+            setValue={setDepartment}
           />
 
           <CustomInput
@@ -109,4 +112,4 @@ const CreateAdmin = () => {
   );
 };
 
-export default CreateAdmin;
+export default EditEmployee;
