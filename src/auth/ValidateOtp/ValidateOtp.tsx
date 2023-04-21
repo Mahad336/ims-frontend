@@ -9,13 +9,23 @@ import {
   Text,
   Link,
   Image,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
+import useEmail from "../../hooks/Auth/useOtpEmail";
+import { useValidateOtp } from "../../hooks/Auth/useValidateOtp";
+import { useSendResetPassword } from "../../hooks/Auth/useSendResetPasswordEmail";
+import { useNavigate } from "react-router-dom";
 
 const ValidateOtp = () => {
   const [resendDisabled, setResendDisabled] = useState(true);
   const [timer, setTimer] = useState<number>(60);
   const [otp, setOtp] = useState<string>("");
+  const { otpEmail } = useEmail();
+  const { mutate, data, isSuccess, error } = useValidateOtp();
+  const { mutate: otpMutate, isSuccess: isOtpSent } = useSendResetPassword();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,13 +45,14 @@ const ValidateOtp = () => {
     // code to resend OTP
     setResendDisabled(true);
     setTimer(60);
-    console.log("here");
+    otpMutate({ email: otpEmail });
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // code to verify OTP
-    console.log({ otp });
+    // hitting the api with email and otp
+    mutate({ email: otpEmail, otp });
+    // mutate({ email: otpEmail, otp });
   };
 
   return (
@@ -103,8 +114,14 @@ const ValidateOtp = () => {
               mt={6}
               mb={4}
             >
-              Enter Verification Code
+              Submit Verification Code
             </Button>
+            {isSuccess && (
+              <Alert status="success" mb={4}>
+                <AlertIcon />
+                OTP validated successfully.
+              </Alert>
+            )}
           </form>
           <Box mt={4}>
             <Text fontSize="xs" color="gray.500">

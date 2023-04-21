@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -9,16 +9,22 @@ import {
   Text,
   Link,
   Image,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
+import { useNavigate } from "react-router-dom";
+import { useSendResetPassword } from "../../hooks/Auth/useSendResetPasswordEmail";
+import useOtpEmail from "../../hooks/Auth/useOtpEmail";
 
 const ForgotPassword: FC = () => {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const { mutate, isSuccess } = useSendResetPassword();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = { email };
-    console.log(data);
+    mutate({ email });
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +34,7 @@ const ForgotPassword: FC = () => {
   return (
     <Flex
       overflowY="hidden"
-      height="auto"
+      minHeight="80vh"
       width="full"
       align="center"
       justifyContent="center"
@@ -86,6 +92,12 @@ const ForgotPassword: FC = () => {
             >
               Send Verification Code
             </Button>
+            {isSuccess && (
+              <Alert status="success" mb={4}>
+                <AlertIcon />
+                OTP sent successfully
+              </Alert>
+            )}
           </form>
         </Box>
       </Box>

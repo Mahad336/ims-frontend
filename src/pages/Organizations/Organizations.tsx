@@ -3,55 +3,29 @@ import { Link } from "react-router-dom";
 import { Box, Heading, Flex, Spacer, Button } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
-
-interface Item {
-  id: number;
-  name: string;
-  category: string;
-  quantity: number;
-  price: number;
-}
+import { useOrganization } from "../../hooks/Organizations/useOrganization";
 
 const Organizations: React.FC = () => {
-  const data: Item[] = [
-    {
-      id: 1,
-      name: "Proabc",
-      category: "Category 1",
-      quantity: 10,
-      price: 100,
-    },
-    {
-      id: 2,
-      name: "Prolmn 2",
-      category: "Category 2",
-      quantity: 5,
-      price: 50,
-    },
-    {
-      id: 3,
-      name: "Inventorypolo 3",
-      category: "Category 3",
-      quantity: 20,
-      price: 200,
-    },
-    {
-      id: 4,
-      name: "Inventoryion 4",
-      category: "Category 3",
-      quantity: 30,
-      price: 100,
-    },
-  ];
-
   const heads: string[] = [
     "id",
+    "Image",
     "name",
     "category",
     "quantity",
     "price",
     "Action",
   ];
+
+  const { organizations, isSuccess } = useOrganization();
+
+  const data = organizations?.map((organization) => ({
+    id: organization.id,
+    src: organization.image,
+    name: organization.name,
+    location: organization.address,
+    email: organization.email,
+    contact: organization.representativeContact,
+  }));
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -9,16 +9,25 @@ import {
   Text,
   Link,
   Image,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
+import { useUpdatePassword } from "../../hooks/Auth/useUpdatePassword";
+import { useNavigate } from "react-router-dom";
 
 const ResetPassword: FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    password: string;
+    confirmPassword: string;
+  }>({
     password: "",
     confirmPassword: "",
   });
   const [error, setError] = useState("");
   const [isError, setIsError] = useState(false);
+  const { mutate, isSuccess, data, error: apiError } = useUpdatePassword();
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,12 +37,10 @@ const ResetPassword: FC = () => {
       setIsError(true);
       return;
     }
-
-    console.log(formData); // Replace with your Axios PUT request logic
+    mutate({ newPassword: formData.password });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.name);
     setIsError(false);
     const { name, value } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -42,7 +49,7 @@ const ResetPassword: FC = () => {
   return (
     <Flex
       overflowY="hidden"
-      height="auto"
+      minHeight="80vh"
       width="full"
       align="center"
       justifyContent="center"
@@ -117,6 +124,13 @@ const ResetPassword: FC = () => {
             >
               Reset Password
             </Button>
+
+            {isSuccess && (
+              <Alert status="success" mb={4}>
+                <AlertIcon />
+                Password updated successfully.
+              </Alert>
+            )}
           </form>
         </Box>
       </Box>

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Flex,
@@ -11,8 +10,41 @@ import {
   Image,
 } from "@chakra-ui/react";
 import logo from "../../assets/logo.png";
+import React, { useState, useEffect } from "react";
+import { useLogin } from "../../hooks/Auth/useLogin";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/Auth/useAuth";
+import { UserRole } from "../../constant/UserRoles";
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { mutate, isSuccess, data } = useLogin();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    mutate({ email, password });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      switch (data?.role?.name) {
+        case UserRole.SUPER_ADMIN:
+          navigate("/superadmin/dashboard");
+          break;
+        case UserRole.ADMIN:
+          navigate("/admin/dashboard");
+          break;
+        case UserRole.EMPLOYEE:
+          navigate("/employee/dashboard");
+          break;
+        default:
+          break;
+      }
+    }
+  }, [isSuccess, data, navigate]);
+
   return (
     <Flex
       height="80vh"
@@ -50,20 +82,40 @@ const LoginPage = () => {
         </Text>
 
         <Box p={4}>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FormControl>
               <FormLabel fontSize={"xs"} color="gray.600">
                 Email
               </FormLabel>
-              <Input type="email" placeholder="Enter email" />
+              <Input
+                type="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+              />
             </FormControl>
             <FormControl mt={6}>
               <FormLabel fontSize={"xs"} color="gray.600">
                 Password
               </FormLabel>
-              <Input type="password" placeholder="Enter password" />
+              <Input
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
             </FormControl>
-            <Button colorScheme="green" variant="solid" width="full" mt={6}>
+            <Button
+              type="submit"
+              colorScheme="green"
+              variant="solid"
+              width="full"
+              mt={6}
+            >
               Login
             </Button>
           </form>

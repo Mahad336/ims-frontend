@@ -49,6 +49,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/validate-otp" element={<ValidateOtp />} />
+          <Route path="/reset-password/" element={<ResetPassword />} />
           <Route path="/" element={<LoginPage />} />
         </Routes>
         <div className="App">
@@ -110,9 +113,6 @@ function App() {
                 element={<CreateOrganization />}
               />
             </Route>
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/validate-otp" element={<ValidateOtp />} />
-            <Route path="/reset-password/" element={<ResetPassword />} />
           </Routes>
         </div>
       </Router>

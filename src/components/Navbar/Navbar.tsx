@@ -19,13 +19,8 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import logo from "../../assets/logo.png";
-
-const Links: [string, string][] = [
-  ["Dashboard", "dashboard"],
-  ["Organizations", "organizations"],
-  ["Admins", "admins"],
-  ["Complaints", "complaints"],
-];
+import useLogout from "../../hooks/Auth/useLogout";
+import { useAuth } from "../../hooks/Auth/useAuth";
 
 interface NavLinkProps {
   children: React.ReactNode;
@@ -52,6 +47,17 @@ const NavLink = ({ children, to }: NavLinkProps) => {
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { mutate: logout } = useLogout();
+
+  const { user } = useAuth();
+  console.log(user?.role?.name);
+
+  const Links: [string, string][] = [
+    ["Dashboard", `${user?.role?.name}/dashboard`],
+    ["Organizations", "organizations"],
+    ["Admins", "admins"],
+    ["Complaints", "complaints"],
+  ];
 
   return (
     <Box bg="whiteAlpha.500" px={4} py={2}>
@@ -95,7 +101,13 @@ const Navbar = () => {
             <MenuList>
               <MenuItem>Profile</MenuItem>
               <MenuItem>Edit</MenuItem>
-              <MenuItem>Logout</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  logout();
+                }}
+              >
+                Logout
+              </MenuItem>
             </MenuList>
           </Menu>
         </Flex>
