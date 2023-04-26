@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { sendResetPasswordEmail } from "../../services/Auth/authApi";
 import useOtpEmail from "./useOtpEmail";
 import { useNavigate } from "react-router-dom";

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchOrganizations } from "../../services/Organizations/organizationApi";
 
 export const useOrganization = () => {
@@ -7,11 +7,13 @@ export const useOrganization = () => {
     isLoading,
     isError,
     isSuccess,
+    refetch,
   } = useQuery("organizations", fetchOrganizations);
   return {
     organizations,
     isLoading,
     isError,
     isSuccess,
+    refetch,
   };
 };

@@ -6,6 +6,7 @@ import { TiArrowSortedUp } from "react-icons/ti";
 import DashboardStats from "../../../components/DashboardStats/DashboardStats";
 import BarChartComplaint from "../../../components/Chart/BarChart/BarChartComplaint";
 import BarChartInventory from "../../../components/Chart/BarChart/BarChartInventory";
+import Navbar from "../../../components/Navbar/Navbar";
 interface Item {
   id: number;
   name: string;

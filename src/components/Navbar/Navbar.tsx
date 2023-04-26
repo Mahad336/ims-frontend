@@ -21,6 +21,7 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import logo from "../../assets/logo.png";
 import useLogout from "../../hooks/Auth/useLogout";
 import { useAuth } from "../../hooks/Auth/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface NavLinkProps {
   children: React.ReactNode;
@@ -48,19 +49,20 @@ const NavLink = ({ children, to }: NavLinkProps) => {
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { mutate: logout } = useLogout();
+  const queryClient = useQueryClient();
 
   const { user } = useAuth();
-  console.log(user?.role?.name);
+  console.log("user in navbar ", user);
 
   const Links: [string, string][] = [
-    ["Dashboard", `${user?.role?.name}/dashboard`],
-    ["Organizations", "organizations"],
-    ["Admins", "admins"],
-    ["Complaints", "complaints"],
+    ["Dashboard", `/${user?.role?.name}/dashboard`],
+    ["Organizations", "/organizations"],
+    ["Admins", "/admins"],
+    ["Complaints", "/complaints"],
   ];
 
   return (
-    <Box bg="whiteAlpha.500" px={4} py={2}>
+    <Box bg="whiteAlpha.900" px={4} py={2}>
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         <IconButton
           size={"md"}

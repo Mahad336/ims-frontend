@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import jwtDecode from "jwt-decode";
 import { useCookies } from "react-cookie";
 

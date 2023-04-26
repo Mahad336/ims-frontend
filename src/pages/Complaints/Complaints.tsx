@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
+import Navbar from "../../components/Navbar/Navbar";
 
 interface Item {
   id: number;
@@ -73,6 +74,7 @@ const Complaints: React.FC = () => {
 
   return (
     <>
+      <Navbar />
       <Box bg="whiteAlpha.900" rounded={10} p={5} minHeight="83vh">
         <Flex>
           <Heading size="md">Complaints</Heading>

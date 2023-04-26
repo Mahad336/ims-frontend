@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { validateOtp } from "../../services/Auth/authApi";
 import { useNavigate } from "react-router-dom";
 

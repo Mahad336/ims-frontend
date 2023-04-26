@@ -4,6 +4,7 @@ import ChartComponent from "../../../components/Chart/ColumnChart/ColumnChart";
 import { Box, Text, Heading } from "@chakra-ui/react";
 import { TiArrowSortedUp } from "react-icons/ti";
 import DashboardStats from "../../../components/DashboardStats/DashboardStats";
+import Navbar from "../../../components/Navbar/Navbar";
 
 interface Item {
   id: number;

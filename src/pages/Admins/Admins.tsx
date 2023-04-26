@@ -1,8 +1,10 @@
 import React from "react";
-import { Box, Heading, Flex, Spacer, Button } from "@chakra-ui/react";
+import { Box, Heading, Flex, Spacer, Button, Image } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { Link } from "react-router-dom";
+import { useFetchUsers } from "../../hooks/Users/useFetchUsers";
+import Navbar from "../../components/Navbar/Navbar";
 
 interface Item {
   id: number;
@@ -13,45 +15,30 @@ interface Item {
 }
 
 const Admins: React.FC = () => {
-  const data: Item[] = [
-    {
-      id: 1,
-      name: "Proabc",
-      category: "Category 1",
-      quantity: 10,
-      price: 100,
-    },
-    {
-      id: 2,
-      name: "Prolmn 2",
-      category: "Category 2",
-      quantity: 5,
-      price: 50,
-    },
-    {
-      id: 3,
-      name: "Inventorypolo 3",
-      category: "Category 3",
-      quantity: 20,
-      price: 200,
-    },
-    {
-      id: 4,
-      name: "Inventoryion 4",
-      category: "Category 3",
-      quantity: 30,
-      price: 100,
-    },
-  ];
-
   const heads: string[] = [
     "id",
-    "name",
-    "category",
-    "quantity",
-    "price",
+    "Image",
+    "Name",
+    "Organization",
+    "Email",
+    "Contact",
     "Action",
   ];
+  const showImage = (src) => (
+    <Image src={src} rounded="lg" boxSize="40px" objectFit="cover" />
+  );
+
+  const { users, isSuccess } = useFetchUsers();
+  console.log(users?.organizationId);
+
+  const data = users?.map((user) => ({
+    id: user.id,
+    src: showImage(user.image),
+    name: user.name,
+    organization: user.organization?.name,
+    email: user.email,
+    contact: user.contact,
+  }));
 
   return (
     <>
@@ -69,12 +56,14 @@ const Admins: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        <CustomizeableTable
-          heads={heads}
-          data={data}
-          filterable
-          selectFilter={["name", "category", "quantity"]}
-        />
+        {isSuccess && (
+          <CustomizeableTable
+            heads={heads}
+            data={data}
+            filterable
+            selectFilter={["organization"]}
+          />
+        )}
       </Box>
     </>
   );

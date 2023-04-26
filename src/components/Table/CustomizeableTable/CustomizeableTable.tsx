@@ -38,8 +38,8 @@ type FilterProps = {
 const SelectFilter: React.FC<FilterProps> = ({ options, value, onChange }) => (
   <Select value={value} onChange={(e) => onChange(e.target.value)}>
     <option value="">All</option>
-    {options.map((option) => (
-      <option key={option} value={option}>
+    {options.map((option, index) => (
+      <option key={index} value={option}>
         {option}
       </option>
     ))}

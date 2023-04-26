@@ -13,7 +13,6 @@ import logo from "../../assets/logo.png";
 import React, { useState, useEffect } from "react";
 import { useLogin } from "../../hooks/Auth/useLogin";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/Auth/useAuth";
 import { UserRole } from "../../constant/UserRoles";
 
 const LoginPage = () => {
@@ -31,7 +30,7 @@ const LoginPage = () => {
     if (isSuccess) {
       switch (data?.role?.name) {
         case UserRole.SUPER_ADMIN:
-          navigate("/superadmin/dashboard");
+          navigate("/superAdmin/dashboard");
           break;
         case UserRole.ADMIN:
           navigate("/admin/dashboard");
@@ -47,7 +46,7 @@ const LoginPage = () => {
 
   return (
     <Flex
-      height="80vh"
+      minHeight="90vh"
       width="full"
       align="center"
       justifyContent="center"

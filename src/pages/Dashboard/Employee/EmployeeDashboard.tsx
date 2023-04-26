@@ -3,6 +3,7 @@ import CustomizeableTable from "../../../components/Table/CustomizeableTable/Cus
 
 import { Box, Text } from "@chakra-ui/react";
 import EmployeeProfile from "../../../components/EmployeeProfile/EmployeeProfile";
+import Navbar from "../../../components/Navbar/Navbar";
 
 interface Item {
   id: number;

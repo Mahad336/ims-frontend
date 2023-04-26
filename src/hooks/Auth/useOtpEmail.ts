@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
-import { useQueryClient } from "react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const useOtpEmail = () => {
   const [email, setEmail] = useState(null);

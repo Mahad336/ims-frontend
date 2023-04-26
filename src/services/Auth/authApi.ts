@@ -6,6 +6,8 @@ export const loginUser = async ({ email, password }) => {
 };
 
 export const getCurrentUser = async () => {
+  const jwt = document.cookie.includes("jwt");
+  if (!jwt) throw new Error("Not Authorized");
   const result = await axiosConfig.get("/auth/current-user");
   return result.data;
 };
