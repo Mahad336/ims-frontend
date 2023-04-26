@@ -1,5 +1,5 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+
 import {
   Box,
   Flex,
@@ -7,7 +7,6 @@ import {
   IconButton,
   useDisclosure,
   Stack,
-  Link,
   Menu,
   MenuButton,
   MenuList,
@@ -21,44 +20,16 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import logo from "../../assets/logo.png";
 import useLogout from "../../hooks/Auth/useLogout";
 import { useAuth } from "../../hooks/Auth/useAuth";
-import { useQueryClient } from "@tanstack/react-query";
-
-interface NavLinkProps {
-  children: React.ReactNode;
-  to: string;
-}
-
-const NavLink = ({ children, to }: NavLinkProps) => {
-  return (
-    <Link
-      to={to}
-      as={RouterLink}
-      px={2}
-      py={1}
-      color="gray.600"
-      rounded={"md"}
-      _hover={{
-        textDecoration: "underline",
-      }}
-    >
-      {children}
-    </Link>
-  );
-};
+import getLinks from "../../navigation/config/LinksConfig";
+import { NavLink } from "./Navlink";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { mutate: logout } = useLogout();
-  const queryClient = useQueryClient();
 
   const { user } = useAuth();
 
-  const Links: [string, string][] = [
-    ["Dashboard", `/${user?.role?.name}/dashboard`],
-    ["Organizations", "/organizations"],
-    ["Admins", "/admins"],
-    ["Complaints", "/complaints"],
-  ];
+  const Links = getLinks(user?.role?.name);
 
   return (
     <Box bg="whiteAlpha.900" px={4} py={2}>
@@ -81,15 +52,15 @@ const Navbar = () => {
           />
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
             {Links.map((link, index) => (
-              <NavLink key={index} to={link[1]}>
-                {link[0]}
+              <NavLink key={index} to={link.to}>
+                {link.label}
               </NavLink>
             ))}
           </HStack>
         </HStack>
         <Flex alignItems={"center"}>
           <Menu>
-            <Text p={3}>Super Admin</Text>
+            <Text p={3}>{user?.name}</Text>
             <MenuButton
               as={Button}
               rounded={"full"}
@@ -97,7 +68,7 @@ const Navbar = () => {
               cursor={"pointer"}
               minW={0}
             >
-              <Avatar size={"md"} src={"https://bit.ly/dan-abramov"} />
+              <Avatar size={"md"} src={user?.image} />
             </MenuButton>
             <MenuList>
               <MenuItem>Profile</MenuItem>
@@ -118,8 +89,8 @@ const Navbar = () => {
         <Box pb={4} display={{ md: "none" }}>
           <Stack as={"nav"} spacing={4}>
             {Links.map((link, index) => (
-              <NavLink key={index} to={link[1]}>
-                {link[0]}
+              <NavLink key={index} to={link.to}>
+                {link.label}
               </NavLink>
             ))}
           </Stack>

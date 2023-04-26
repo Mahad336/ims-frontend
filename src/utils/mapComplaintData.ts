@@ -4,7 +4,7 @@ export const mapComplaintData = (complaints) => {
     id: complaint.id,
     title: complaint.title,
     description: complaint.description,
-    subDate: formatDate(complaint.submissionDate),
+    subDate: formatDate(complaint.createdDate),
     status: complaint.status,
   }));
 };

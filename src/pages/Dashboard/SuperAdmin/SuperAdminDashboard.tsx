@@ -5,112 +5,84 @@ import { Box, Text, Heading } from "@chakra-ui/react";
 import { TiArrowSortedUp } from "react-icons/ti";
 import DashboardStats from "../../../components/DashboardStats/DashboardStats";
 import Navbar from "../../../components/Navbar/Navbar";
-
-interface Item {
-  id: number;
-  name: string;
-  category: string;
-  quantity: number;
-  price: number;
-}
+import { useFetchUsers } from "../../../hooks/Users/useFetchUsers";
+import { useComplaints } from "../../../hooks/Complaints/useComplaints";
+import { useOrganization } from "../../../hooks/Organizations/useOrganization";
+import { filterByCreatedDate } from "../../../utils/filterByCreatedDate";
+import { getDataByMonth } from "../../../utils/getDataByMonth";
+import { formatDate } from "../../../utils/formattedDate";
+import { descSortDataByCreatedDate } from "../../../utils/descSortByCreatedDate";
 
 const SuperAdminDashboard: React.FC = () => {
-  const data: Item[] = [
-    {
-      id: 1,
-      name: "Proabc",
-      category: "Category 1",
-      quantity: 10,
-      price: 100,
-    },
-    {
-      id: 2,
-      name: "Prolmn 2",
-      category: "Category 2",
-      quantity: 5,
-      price: 50,
-    },
-    {
-      id: 3,
-      name: "Inventorypolo 3",
-      category: "Category 3",
-      quantity: 20,
-      price: 200,
-    },
-    {
-      id: 4,
-      name: "Inventoryion 4",
-      category: "Category 3",
-      quantity: 30,
-      price: 100,
-    },
-  ];
+  const { users: admins, isSuccess: userFetched } = useFetchUsers();
+  const { complaints, isSuccess: complaintsFetched } = useComplaints();
+  const { organizations, isSuccess: organizationsFetched } = useOrganization();
+  const dashboardStatsFetched =
+    userFetched && complaintsFetched && organizationsFetched;
+
+  const data =
+    complaints &&
+    complaints.map((complaint) => ({
+      id: complaint.id,
+      adminName: complaint?.submittedBy?.name,
+      organization: complaint?.organization?.name,
+      description: complaint?.description,
+      submissionDate: formatDate(complaint?.createdDate),
+      status: complaint?.status,
+    }));
 
   const heads: string[] = [
-    "id",
-    "name",
-    "category",
-    "quantity",
-    "price",
+    "Id",
+    "Admin Name",
+    "Organization",
+    "Description",
+    "Submission Date",
+    "Status",
     "Action",
   ];
-  const organizationsData: [string, number][] = [
-    ["Jan", 100],
-    ["Feb", 200],
-    ["Mar", 300],
-    ["Apr", 400],
-    ["May", 500],
-    ["Jun", 600],
-    ["Jul", 700],
-    ["Aug", 800],
-    ["Sep", 900],
-    ["Oct", 100],
-    ["Nov", 1100],
-    ["Dec", 1200],
-  ];
+  const organizationsData = organizations ? getDataByMonth(organizations) : [];
+  const adminsData = admins ? getDataByMonth(admins) : [];
 
-  const adminsData: [string, number][] = [
-    ["Jan", 50],
-    ["Feb", 100],
-    ["Mar", 150],
-    ["Apr", 200],
-    ["May", 250],
-    ["Jun", 300],
-    ["Jul", 350],
-    ["Aug", 400],
-    ["Sep", 450],
-    ["Oct", 500],
-    ["Nov", 550],
-    ["Dec", 600],
-  ];
-
+  const pendingComplaints = complaints?.filter(
+    (complaint) => complaint?.status === "pending"
+  ).length;
   const DashboardSt = [
     {
-      name: "Organization",
-      totalCount: "1500",
-      monthlyCount: "200 new organizations this week",
+      name: "Organizations",
+      totalCount: String(organizations?.length),
+      monthlyCount: `${filterByCreatedDate(
+        organizations,
+        2
+      )} new organizations in 2 months `,
     },
     {
-      name: "Organization 2",
-      totalCount: "1500",
-      monthlyCount: "200 new organizations this week",
+      name: "Admins",
+      totalCount: String(admins?.length),
+      monthlyCount: `${filterByCreatedDate(admins, 2)} new Admins in 2 months `,
     },
     {
-      name: "Organization 3",
-      totalCount: "1500",
-      monthlyCount: "200 new organizations this week",
+      name: "Pending Complaints",
+      totalCount: String(pendingComplaints),
+      monthlyCount: `${filterByCreatedDate(
+        complaints?.filter((complaint) => complaint?.status === "pending"),
+        2
+      )} new complaints in 2 months `,
     },
     {
-      name: "Organization 4",
-      totalCount: "1500",
-      monthlyCount: "200 new organizations this week",
+      name: "Resolved Compaints",
+      totalCount: String(complaints?.length - pendingComplaints),
+      monthlyCount: `${filterByCreatedDate(
+        complaints?.filter((complaint) => complaint?.status === "resolved"),
+        2
+      )} new complaints in 2 months `,
     },
   ];
+
   return (
     <>
       <Box bg="whiteAlpha.900" rounded={10} p={5}>
         <Heading size="md">Dashboard</Heading>
-        <DashboardStats data={DashboardSt} />
+        {dashboardStatsFetched && <DashboardStats data={DashboardSt} />}
 
         <Box borderBottom="1px solid" borderBottomColor="gray.300">
           <ChartComponent
@@ -118,11 +90,12 @@ const SuperAdminDashboard: React.FC = () => {
             organizationsData={organizationsData}
           ></ChartComponent>
         </Box>
-
-        <Box py={12}>
-          <Text color="black">Recent Complaints</Text>
-          <CustomizeableTable heads={heads} data={data} />
-        </Box>
+        {dashboardStatsFetched && (
+          <Box py={12}>
+            <Text color="black">Recent Complaints</Text>
+            <CustomizeableTable heads={heads} data={data} />
+          </Box>
+        )}
       </Box>
     </>
   );

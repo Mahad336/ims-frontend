@@ -3,7 +3,6 @@ import { getCurrentUser } from "../../services/Auth/authApi";
 import { useCookies } from "react-cookie";
 
 export const useAuth = () => {
-  console.log("current suer");
   const {
     data: user,
     isLoading,
