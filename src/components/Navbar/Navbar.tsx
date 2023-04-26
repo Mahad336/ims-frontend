@@ -52,7 +52,6 @@ const Navbar = () => {
   const queryClient = useQueryClient();
 
   const { user } = useAuth();
-  console.log("user in navbar ", user);
 
   const Links: [string, string][] = [
     ["Dashboard", `/${user?.role?.name}/dashboard`],

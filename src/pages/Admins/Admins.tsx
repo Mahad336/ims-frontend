@@ -29,7 +29,6 @@ const Admins: React.FC = () => {
   );
 
   const { users, isSuccess } = useFetchUsers();
-  console.log(users?.organizationId);
 
   const data = users?.map((user) => ({
     id: user.id,

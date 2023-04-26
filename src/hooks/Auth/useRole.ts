@@ -6,7 +6,7 @@ export function useRole() {
   const [{ jwt }] = useCookies();
 
   const { data } = useQuery(
-    "role",
+    ["role"],
     () => {
       const decodedToken: any = jwtDecode(jwt || "");
       return decodedToken;

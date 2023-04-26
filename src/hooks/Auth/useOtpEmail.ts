@@ -8,10 +8,10 @@ const useOtpEmail = () => {
 
   const setEmailAddress = (email: string) => {
     setEmail(email);
-    queryClient.setQueryData("otpEmail", email);
+    queryClient.setQueryData(["otpEmail"], email);
   };
 
-  const { data: emailData } = useQuery("otpEmail", () => setEmail, {
+  const { data: emailData } = useQuery(["otpEmail"], () => setEmail, {
     enabled: false,
     initialData: email,
   });

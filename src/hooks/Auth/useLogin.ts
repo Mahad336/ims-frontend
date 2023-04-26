@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginUser } from "../../services/Auth/authApi";
-//import { useFetchUsers } from "../Users/useFetchUsers";
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
@@ -9,7 +8,8 @@ export const useLogin = () => {
     loginUser,
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["currentUser"]);
+        queryClient.refetchQueries(["currentUser"]);
+        queryClient.refetchQueries(["complaint"]);
       },
     }
   );

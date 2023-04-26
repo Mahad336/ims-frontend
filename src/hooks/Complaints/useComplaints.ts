@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchUsers } from "../../services/Users/userApi";
+import { fetchComplaints } from "../../services/Complaints/complaintApi";
 import { useAuth } from "../Auth/useAuth";
 
-export const useFetchUsers = () => {
+export const useComplaints = () => {
   const { user } = useAuth();
   const {
-    data: users,
+    data: complaints,
     isLoading,
     isError,
     isSuccess,
     refetch,
-  } = useQuery(["users", user?.id], fetchUsers);
+  } = useQuery(["complaint"], fetchComplaints);
   return {
-    users,
+    complaints,
     isLoading,
     isError,
     isSuccess,

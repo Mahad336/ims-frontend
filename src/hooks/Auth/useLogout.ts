@@ -11,8 +11,10 @@ const useLogout = () => {
   return useMutation(logout, {
     onSuccess: () => {
       //Invalidate the user query cache
-      navigate("/");
       queryClient.setQueryData(["currentUser"], null);
+      queryClient.setQueryData(["complaint"], null);
+      // queryClient.setQueryData(["organization"], null);
+      navigate("/");
 
       // Redirect to login page or do anything you want after successful logout
 
