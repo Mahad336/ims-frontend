@@ -10,7 +10,7 @@ export const useComplaints = () => {
     isError,
     isSuccess,
     refetch,
-  } = useQuery(["complaint"], fetchComplaints);
+  } = useQuery(["complaints"], fetchComplaints);
   return {
     complaints,
     isLoading,

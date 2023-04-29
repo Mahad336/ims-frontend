@@ -7,6 +7,9 @@ import DashboardStats from "../../../components/DashboardStats/DashboardStats";
 import BarChartComplaint from "../../../components/Chart/BarChart/BarChartComplaint";
 import BarChartInventory from "../../../components/Chart/BarChart/BarChartInventory";
 import Navbar from "../../../components/Navbar/Navbar";
+import { complaintDashboardHeads } from "../../../constant/tableHeads";
+import { mapComplaintDashboardData } from "../../../utils/mapEntityData";
+import { useComplaints } from "../../../hooks/Complaints/useComplaints";
 interface Item {
   id: number;
   name: string;
@@ -16,60 +19,7 @@ interface Item {
 }
 
 const AdminDashboard: React.FC = () => {
-  const data: Item[] = [
-    {
-      id: 1,
-      name: "Proabc",
-      category: "Category 1",
-      quantity: 10,
-      price: 100,
-    },
-    {
-      id: 2,
-      name: "Prolmn 2",
-      category: "Category 2",
-      quantity: 5,
-      price: 50,
-    },
-    {
-      id: 3,
-      name: "Inventorypolo 3",
-      category: "Category 333",
-      quantity: 20,
-      price: 200,
-    },
-    {
-      id: 4,
-      name: "Inventoryion 4",
-      category: "Category 3",
-      quantity: 30,
-      price: 100,
-    },
-  ];
-
-  const heads: string[] = [
-    "id",
-    "name",
-    "category",
-    "quantity",
-    "price",
-    "Action",
-  ];
-  const complaintsData: [string, number, number][] = [
-    ["Jan", 20, 10],
-    ["Feb", 30, 20],
-    ["Mar", 40, 30],
-    ["Apr", 50, 40],
-    ["May", 60, 50],
-    ["Jun", 70, 60],
-    ["Jul", 80, 70],
-    ["Aug", 90, 80],
-    ["Sep", 100, 90],
-    ["Oct", 110, 100],
-    ["Nov", 120, 110],
-    ["Dec", 130, 20],
-  ];
-
+  const { complaints, isSuccess } = useComplaints();
   const DashboardSt = [
     {
       name: "Organization",
@@ -91,6 +41,21 @@ const AdminDashboard: React.FC = () => {
       totalCount: "1500",
       monthlyCount: "200 new organizations this week",
     },
+  ];
+
+  const complaintsData: [string, number, number][] = [
+    ["Jan", 20, 10],
+    ["Feb", 30, 20],
+    ["Mar", 40, 30],
+    ["Apr", 50, 40],
+    ["May", 60, 50],
+    ["Jun", 70, 60],
+    ["Jul", 80, 70],
+    ["Aug", 90, 80],
+    ["Sep", 100, 90],
+    ["Oct", 110, 100],
+    ["Nov", 120, 110],
+    ["Dec", 130, 20],
   ];
 
   const InventoryData = {
@@ -134,7 +99,14 @@ const AdminDashboard: React.FC = () => {
 
         <Box py={12}>
           <Text color="black">Recent Complaints</Text>
-          <CustomizeableTable heads={heads} data={data} />
+          {isSuccess && (
+            <CustomizeableTable
+              heads={complaintDashboardHeads}
+              data={mapComplaintDashboardData(
+                complaints.receivedComplaints ?? []
+              )}
+            />
+          )}
         </Box>
       </Box>
     </>

@@ -13,30 +13,34 @@ import { EditIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 
 interface Props {
-  id: number;
-  imageUrl: string;
-  name: string;
-  emailAddress: string;
-  Desgination: string;
-  Department: string;
-  ContactNumber: string;
-  Education: string;
-  CompanyExperience: string;
-  TotalExperience: string;
+  employee: {
+    id: number;
+    image: string;
+    name: string;
+    email: string;
+    designation: string;
+    department: string;
+    contact: string;
+    education: string;
+    companyExperience: string;
+    totalExperience: string;
+  };
 }
 
-const EmployeeProfile = ({
-  id,
-  imageUrl,
-  name,
-  emailAddress,
-  Desgination,
-  Department,
-  ContactNumber,
-  Education,
-  CompanyExperience,
-  TotalExperience,
-}: Props) => {
+const EmployeeProfile = ({ employee }: Props) => {
+  const {
+    id,
+    image,
+    name,
+    email,
+    designation,
+    department,
+    contact,
+    education,
+    companyExperience,
+    totalExperience,
+  } = employee;
+
   return (
     <Box borderBottom="1px solid" borderBottomColor="gray.300">
       <Flex justifyContent="space-between">
@@ -48,8 +52,8 @@ const EmployeeProfile = ({
         </Link>
       </Flex>
       <Flex p={10} gap={20} paddingBottom={5}>
-        <VStack width="10%">
-          <Image rounded={"2xl"} boxSize="120px" src={imageUrl} />
+        <VStack minWidth="10%">
+          <Image rounded={"2xl"} boxSize="120px" src={image} />
         </VStack>
         <Flex justifyContent="space-between" width="90%" flexWrap="wrap">
           <VStack>
@@ -57,28 +61,28 @@ const EmployeeProfile = ({
             <Text fontWeight={"semibold"}>{name}</Text>
             <Spacer></Spacer>
             <Text>Email Address</Text>
-            <Text fontWeight={"semibold"}>{emailAddress}</Text>
+            <Text fontWeight={"semibold"}>{email}</Text>
           </VStack>
           <VStack>
             <Text>Designation</Text>
-            <Text fontWeight={"semibold"}>{Desgination}</Text>
+            <Text fontWeight={"semibold"}>{designation}</Text>
             <Spacer></Spacer>
             <Text>Department</Text>
-            <Text fontWeight={"semibold"}>{Department}</Text>
+            <Text fontWeight={"semibold"}>{department}</Text>
           </VStack>
           <VStack>
             <Text>Contact Number</Text>
-            <Text fontWeight={"semibold"}>{ContactNumber}</Text>
+            <Text fontWeight={"semibold"}>{contact}</Text>
             <Spacer></Spacer>
             <Text>Education</Text>
-            <Text fontWeight={"semibold"}>{Education}</Text>
+            <Text fontWeight={"semibold"}>{education}</Text>
           </VStack>
           <VStack>
             <Text>Company Experience</Text>
-            <Text fontWeight={"semibold"}>{CompanyExperience}</Text>
+            <Text fontWeight={"semibold"}>{companyExperience}</Text>
             <Spacer></Spacer>
             <Text>Total Experience</Text>
-            <Text fontWeight={"semibold"}>{TotalExperience}</Text>
+            <Text fontWeight={"semibold"}>{totalExperience}</Text>
           </VStack>
         </Flex>
       </Flex>

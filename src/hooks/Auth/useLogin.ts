@@ -9,7 +9,9 @@ export const useLogin = () => {
     {
       onSuccess: () => {
         queryClient.refetchQueries(["currentUser"]);
-        queryClient.refetchQueries(["complaint"]);
+        queryClient.refetchQueries(["complaints"]);
+        queryClient.refetchQueries(["requests"]);
+        queryClient.refetchQueries(["organizations"]);
       },
     }
   );

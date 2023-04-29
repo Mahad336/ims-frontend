@@ -9,7 +9,9 @@ export const useAuth = () => {
     isError,
     isSuccess,
     refetch,
-  } = useQuery(["currentUser"], getCurrentUser);
+  } = useQuery(["currentUser"], getCurrentUser, {
+    onSuccess: (data) => {},
+  });
   return {
     user,
     isLoading,

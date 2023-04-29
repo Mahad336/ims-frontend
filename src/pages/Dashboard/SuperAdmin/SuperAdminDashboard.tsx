@@ -12,6 +12,8 @@ import { filterByCreatedDate } from "../../../utils/filterByCreatedDate";
 import { getDataByMonth } from "../../../utils/getDataByMonth";
 import { formatDate } from "../../../utils/formattedDate";
 import { descSortDataByCreatedDate } from "../../../utils/descSortByCreatedDate";
+import { mapComplaintDashboardData } from "../../../utils/mapEntityData";
+import { complaintDashboardHeads } from "../../../constant/tableHeads";
 
 const SuperAdminDashboard: React.FC = () => {
   const { users: admins, isSuccess: userFetched } = useFetchUsers();
@@ -20,26 +22,6 @@ const SuperAdminDashboard: React.FC = () => {
   const dashboardStatsFetched =
     userFetched && complaintsFetched && organizationsFetched;
 
-  const data =
-    complaints &&
-    complaints.map((complaint) => ({
-      id: complaint.id,
-      adminName: complaint?.submittedBy?.name,
-      organization: complaint?.organization?.name,
-      description: complaint?.description,
-      submissionDate: formatDate(complaint?.createdDate),
-      status: complaint?.status,
-    }));
-
-  const heads: string[] = [
-    "Id",
-    "Admin Name",
-    "Organization",
-    "Description",
-    "Submission Date",
-    "Status",
-    "Action",
-  ];
   const organizationsData = organizations ? getDataByMonth(organizations) : [];
   const adminsData = admins ? getDataByMonth(admins) : [];
 
@@ -93,7 +75,10 @@ const SuperAdminDashboard: React.FC = () => {
         {dashboardStatsFetched && (
           <Box py={12}>
             <Text color="black">Recent Complaints</Text>
-            <CustomizeableTable heads={heads} data={data} />
+            <CustomizeableTable
+              heads={complaintDashboardHeads}
+              data={mapComplaintDashboardData(complaints ?? [])}
+            />
           </Box>
         )}
       </Box>

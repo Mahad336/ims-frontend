@@ -69,7 +69,7 @@ const CustomizeableTable: React.FC<TableProps> = ({
     if (selectFilters[curr]) {
       return acc.filter(
         (item) =>
-          item[curr].toString().toLowerCase() ===
+          item[curr]?.toString().toLowerCase() ===
           selectFilters[curr].toString().toLowerCase()
       );
     }

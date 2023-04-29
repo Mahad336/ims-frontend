@@ -3,55 +3,14 @@ import { Box, Heading, Flex, Spacer, Button, Icon } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { Link } from "react-router-dom";
-
-interface Item {
-  id: number;
-  name: string;
-  category: string;
-  quantity: number;
-  price: number;
-}
-
+import { useRequests } from "../../hooks/Requests/useRequests";
+import { requestHeads } from "../../constant/tableHeads";
+import { mapRequestData } from "../../utils/mapEntityData";
+import { ReqTypes } from "../../constant/RequestTypes";
 const Requests: React.FC = () => {
-  const data: Item[] = [
-    {
-      id: 1,
-      name: "Proabc",
-      category: "Category 1",
-      quantity: 10,
-      price: 100,
-    },
-    {
-      id: 2,
-      name: "Prolmn 2",
-      category: "Category 2",
-      quantity: 5,
-      price: 50,
-    },
-    {
-      id: 3,
-      name: "Inventorypolo 3",
-      category: "Category 3",
-      quantity: 20,
-      price: 200,
-    },
-    {
-      id: 4,
-      name: "Inventoryion 4",
-      category: "Category 3",
-      quantity: 30,
-      price: 100,
-    },
-  ];
-
-  const heads: string[] = [
-    "id",
-    "name",
-    "category",
-    "quantity",
-    "price",
-    "Action",
-  ];
+  const { requests, isSuccess: requestsFetched } = useRequests(
+    ReqTypes.INVENTORY_AQUISITION
+  );
 
   return (
     <>
@@ -69,12 +28,14 @@ const Requests: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        <CustomizeableTable
-          heads={heads}
-          data={data}
-          filterable
-          selectFilter={["category"]}
-        />
+        {requestsFetched && (
+          <CustomizeableTable
+            heads={requestHeads}
+            data={requests}
+            filterable
+            selectFilter={["category"]}
+          />
+        )}
       </Box>
     </>
   );

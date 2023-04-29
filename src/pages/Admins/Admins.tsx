@@ -1,43 +1,14 @@
 import React from "react";
-import { Box, Heading, Flex, Spacer, Button, Image } from "@chakra-ui/react";
+import { Box, Heading, Flex, Spacer, Button } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { Link } from "react-router-dom";
 import { useFetchUsers } from "../../hooks/Users/useFetchUsers";
-import Navbar from "../../components/Navbar/Navbar";
-
-interface Item {
-  id: number;
-  name: string;
-  category: string;
-  quantity: number;
-  price: number;
-}
-
+import { mapAdminData } from "../../utils/mapEntityData";
+import { adminHeads } from "../../constant/tableHeads";
+import { showImage } from "../Organizations/Organizations";
 const Admins: React.FC = () => {
-  const heads: string[] = [
-    "id",
-    "Image",
-    "Name",
-    "Organization",
-    "Email",
-    "Contact",
-    "Action",
-  ];
-  const showImage = (src) => (
-    <Image src={src} rounded="lg" boxSize="40px" objectFit="cover" />
-  );
-
   const { users, isSuccess } = useFetchUsers();
-
-  const data = users?.map((user) => ({
-    id: user.id,
-    src: showImage(user.image),
-    name: user.name,
-    organization: user.organization?.name,
-    email: user.email,
-    contact: user.contact,
-  }));
 
   return (
     <>
@@ -57,8 +28,8 @@ const Admins: React.FC = () => {
         </Flex>
         {isSuccess && (
           <CustomizeableTable
-            heads={heads}
-            data={data}
+            heads={adminHeads}
+            data={users.map((user) => ({ ...user, src: showImage(user.src) }))}
             filterable
             selectFilter={["organization"]}
           />

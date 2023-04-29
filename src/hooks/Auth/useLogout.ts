@@ -12,8 +12,9 @@ const useLogout = () => {
     onSuccess: () => {
       //Invalidate the user query cache
       queryClient.setQueryData(["currentUser"], null);
-      queryClient.setQueryData(["complaint"], null);
-      // queryClient.setQueryData(["organization"], null);
+      queryClient.setQueryData(["complaints"], null);
+      queryClient.setQueryData(["organizations"], null);
+      queryClient.setQueryData(["requests"], null);
       navigate("/");
 
       // Redirect to login page or do anything you want after successful logout

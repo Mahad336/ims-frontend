@@ -5,32 +5,16 @@ import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { useOrganization } from "../../hooks/Organizations/useOrganization";
 import Navbar from "../../components/Navbar/Navbar";
+import { mapOrganizationData } from "../../utils/mapEntityData";
+import { organizationHeads } from "../../constant/tableHeads";
+
+export const showImage = (src) => (
+  <Image src={src} rounded="lg" boxSize="40px" objectFit="cover" />
+);
 
 const Organizations: React.FC = () => {
-  const heads: string[] = [
-    "id",
-    "Image",
-    "Name",
-    "Location",
-    "Email",
-    "Contact No.",
-    "Action",
-  ];
-
-  const showImage = (src) => (
-    <Image src={src} rounded="lg" boxSize="40px" objectFit="cover" />
-  );
-
   const { organizations, isSuccess } = useOrganization();
-
-  const data = organizations?.map((organization) => ({
-    id: organization.id,
-    src: showImage(organization.image),
-    name: organization.name,
-    location: organization.address,
-    email: organization.email,
-    contact: organization.representativeContact,
-  }));
+  console.log(organizations ?? []);
 
   return (
     <>
@@ -50,8 +34,11 @@ const Organizations: React.FC = () => {
         </Flex>
         {isSuccess && (
           <CustomizeableTable
-            heads={heads}
-            data={data}
+            heads={organizationHeads}
+            data={organizations.map((org) => ({
+              ...org,
+              src: showImage(org.src),
+            }))}
             filterable
             selectFilter={["location"]}
           />

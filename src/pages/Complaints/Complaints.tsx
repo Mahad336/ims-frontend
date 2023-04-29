@@ -19,27 +19,24 @@ import Navbar from "../../components/Navbar/Navbar";
 import { useAuth } from "../../hooks/Auth/useAuth";
 import { UserRole } from "../../constant/UserRoles";
 import { useComplaints } from "../../hooks/Complaints/useComplaints";
-import { mapComplaintData } from "../../utils/mapComplaintData";
+import { mapComplaintData } from "../../utils/mapEntityData";
+import { complaintHeads } from "../../constant/tableHeads";
 
 const Complaints = () => {
   const { user } = useAuth();
   const { complaints, isSuccess } = useComplaints();
   const isAdmin = user?.role.name === UserRole.ADMIN;
-  const data = isAdmin ? null : mapComplaintData(complaints || []);
-  const adminData = isAdmin
-    ? {
-        receivedComplaints: mapComplaintData(complaints.receivedComplaints),
-        submittedComplaints: mapComplaintData(complaints.submittedComplaints),
-      }
-    : {};
-  const heads = [
-    "ID",
-    "Title",
-    "Description",
-    "Submission Date",
-    "Status",
-    "Action",
-  ];
+  const data =
+    complaints && isAdmin ? null : mapComplaintData(complaints || []);
+  const adminData =
+    complaints && isAdmin
+      ? {
+          receivedComplaints: mapComplaintData(complaints?.receivedComplaints),
+          submittedComplaints: mapComplaintData(
+            complaints?.submittedComplaints
+          ),
+        }
+      : {};
 
   return (
     <Box bg="whiteAlpha.900" rounded={10} p={5} minHeight="83vh">
@@ -84,7 +81,7 @@ const Complaints = () => {
           <TabPanels>
             <TabPanel>
               <CustomizeableTable
-                heads={heads}
+                heads={complaintHeads}
                 data={adminData.receivedComplaints}
                 selectFilter={["status"]}
                 filterable
@@ -92,7 +89,7 @@ const Complaints = () => {
             </TabPanel>
             <TabPanel>
               <CustomizeableTable
-                heads={heads}
+                heads={complaintHeads}
                 data={adminData.submittedComplaints}
                 selectFilter={["status"]}
                 filterable
@@ -103,7 +100,7 @@ const Complaints = () => {
       )}
       {!isAdmin && isSuccess && data && (
         <CustomizeableTable
-          heads={heads}
+          heads={complaintHeads}
           data={data}
           selectFilter={["status"]}
           filterable

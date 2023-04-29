@@ -11,10 +11,7 @@ import {
   IconButton,
   Collapse,
   Flex,
-  Text,
   Input,
-  Button,
-  VStack,
   TableContainer,
 } from "@chakra-ui/react";
 import {
@@ -23,10 +20,9 @@ import {
   DeleteIcon,
   ChevronDownIcon,
 } from "@chakra-ui/icons";
-import CustomInput from "../../Form/CustomInput/CustomInput";
 import CustomizeableTable from "../CustomizeableTable/CustomizeableTable";
 import { Link } from "react-router-dom";
-import { SubcategoryTable } from "../SubcategoryTable/SubcategoryTable";
+import { SubCategoryHeads } from "../../../constant/tableHeads";
 
 interface Category {
   id: number;
@@ -96,7 +92,10 @@ const Row = ({ category }: RowProps) => {
       <Tr>
         <Td colSpan={7} p={isOpen ? 1 : 0.3}>
           <Collapse in={isOpen} animateOpacity>
-            <SubcategoryTable subCategories={category.subCategories} />
+            <CustomizeableTable
+              heads={SubCategoryHeads}
+              data={category.subCategories}
+            />
           </Collapse>
         </Td>
       </Tr>

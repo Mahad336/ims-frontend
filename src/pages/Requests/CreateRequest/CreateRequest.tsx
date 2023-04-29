@@ -17,6 +17,7 @@ import {
 import { Link } from "react-router-dom";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
+import { ReqTypes } from "../../../constant/RequestTypes";
 
 type Category = {
   id: number;
@@ -82,9 +83,9 @@ const CreateRequest = () => {
             placeholder="Select Request"
             type="select"
             options={[
-              { id: 1, name: "Inventory Acquisition" },
-              { id: 2, name: "Repaired" },
-              { id: 3, name: "Replaced" },
+              { id: 1, name: ReqTypes.INVENTORY_AQUISITION },
+              { id: 2, name: ReqTypes.REPAIRED },
+              { id: 3, name: ReqTypes.REPLACED },
             ]}
           />
 
