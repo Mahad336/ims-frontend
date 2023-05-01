@@ -4,7 +4,6 @@ import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { Link } from "react-router-dom";
 import { useFetchUsers } from "../../hooks/Users/useFetchUsers";
-import { mapAdminData } from "../../utils/mapEntityData";
 import { adminHeads } from "../../constant/tableHeads";
 import { showImage } from "../Organizations/Organizations";
 const Admins: React.FC = () => {

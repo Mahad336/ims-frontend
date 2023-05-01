@@ -1,4 +1,4 @@
-export const complaintHeads: string[] = [
+export const complaintEmployeeHeads: string[] = [
   "ID",
   "Title",
   "Description",
@@ -18,9 +18,19 @@ export const requestHeads: string[] = [
   "Action",
 ];
 
-export const complaintDashboardHeads: string[] = [
+export const complaintSuperAdminHeads: string[] = [
   "Id",
   "Admin Name",
+  "Organization",
+  "Description",
+  "Submission Date",
+  "Status",
+  "Action",
+];
+
+export const complaintAdminHeads: string[] = [
+  "Id",
+  "Employee Name",
   "Organization",
   "Description",
   "Submission Date",

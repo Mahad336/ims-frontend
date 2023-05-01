@@ -5,7 +5,6 @@ import CustomizeableTable from "../../components/Table/CustomizeableTable/Custom
 import { Link } from "react-router-dom";
 import { useRequests } from "../../hooks/Requests/useRequests";
 import { requestHeads } from "../../constant/tableHeads";
-import { mapRequestData } from "../../utils/mapEntityData";
 import { ReqTypes } from "../../constant/RequestTypes";
 const Requests: React.FC = () => {
   const { requests, isSuccess: requestsFetched } = useRequests(

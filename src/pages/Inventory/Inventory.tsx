@@ -5,10 +5,9 @@ import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { useItem } from "../../hooks/Inventory/useItem";
 import { itemHeads } from "../../constant/tableHeads";
-import { mapItemData } from "../../utils/mapEntityData";
 
 const Inventory: React.FC = () => {
-  const { items, isSuccess: itemFetched } = useItem();
+  const { items, isSuccess: itemsFetched } = useItem();
 
   return (
     <>
@@ -26,10 +25,10 @@ const Inventory: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {itemFetched && (
+        {itemsFetched && (
           <CustomizeableTable
             heads={itemHeads}
-            data={mapItemData(items)}
+            data={items}
             filterable
             selectFilter={["name", "category", "subCategory"]}
           />

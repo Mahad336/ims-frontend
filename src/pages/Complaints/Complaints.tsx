@@ -19,22 +19,23 @@ import Navbar from "../../components/Navbar/Navbar";
 import { useAuth } from "../../hooks/Auth/useAuth";
 import { UserRole } from "../../constant/UserRoles";
 import { useComplaints } from "../../hooks/Complaints/useComplaints";
-import { mapComplaintData } from "../../utils/mapEntityData";
-import { complaintHeads } from "../../constant/tableHeads";
+import {
+  complaintEmployeeHeads,
+  complaintSuperAdminHeads,
+  complaintAdminHeads,
+} from "../../constant/tableHeads";
 
 const Complaints = () => {
   const { user } = useAuth();
   const { complaints, isSuccess } = useComplaints();
   const isAdmin = user?.role.name === UserRole.ADMIN;
-  const data =
-    complaints && isAdmin ? null : mapComplaintData(complaints || []);
+  const isSuperAdmin = user?.role.name === UserRole.SUPER_ADMIN;
+  const data = complaints && isAdmin ? null : complaints;
   const adminData =
     complaints && isAdmin
       ? {
-          receivedComplaints: mapComplaintData(complaints?.receivedComplaints),
-          submittedComplaints: mapComplaintData(
-            complaints?.submittedComplaints
-          ),
+          receivedComplaints: complaints?.receivedComplaints,
+          submittedComplaints: complaints?.submittedComplaints,
         }
       : {};
 
@@ -81,7 +82,7 @@ const Complaints = () => {
           <TabPanels>
             <TabPanel>
               <CustomizeableTable
-                heads={complaintHeads}
+                heads={complaintAdminHeads}
                 data={adminData.receivedComplaints}
                 selectFilter={["status"]}
                 filterable
@@ -89,7 +90,7 @@ const Complaints = () => {
             </TabPanel>
             <TabPanel>
               <CustomizeableTable
-                heads={complaintHeads}
+                heads={complaintEmployeeHeads}
                 data={adminData.submittedComplaints}
                 selectFilter={["status"]}
                 filterable
@@ -100,7 +101,9 @@ const Complaints = () => {
       )}
       {!isAdmin && isSuccess && data && (
         <CustomizeableTable
-          heads={complaintHeads}
+          heads={
+            isSuperAdmin ? complaintSuperAdminHeads : complaintEmployeeHeads
+          }
           data={data}
           selectFilter={["status"]}
           filterable

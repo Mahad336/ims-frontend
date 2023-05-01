@@ -52,9 +52,11 @@ const BarChartInventory = ({ data }) => {
           top={3}
           zIndex={1}
         >
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
+          {Object.keys(data).map((month: string) => (
+            <option key={month} value={month}>
+              {month}
+            </option>
+          ))}
         </Select>
       </Box>
       <Chart

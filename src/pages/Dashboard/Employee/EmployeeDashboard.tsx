@@ -5,8 +5,10 @@ import { useComplaints } from "../../../hooks/Complaints/useComplaints";
 import { Box, Text } from "@chakra-ui/react";
 import EmployeeProfile from "../../../components/EmployeeProfile/EmployeeProfile";
 import { useRequests } from "../../../hooks/Requests/useRequests";
-import { mapComplaintData, mapRequestData } from "../../../utils/mapEntityData";
-import { complaintHeads, requestHeads } from "../../../constant/tableHeads";
+import {
+  complaintEmployeeHeads,
+  requestHeads,
+} from "../../../constant/tableHeads";
 
 const EmployeeDashboard: React.FC = () => {
   const { users: employee, isSuccess: userFetched } = useFetchUsers();
@@ -25,18 +27,15 @@ const EmployeeDashboard: React.FC = () => {
             <Text color="black" fontWeight="semibold">
               Recent Requests
             </Text>
-            <CustomizeableTable
-              heads={requestHeads}
-              data={mapRequestData(requests ?? [])}
-            />
+            <CustomizeableTable heads={requestHeads} data={requests} />
           </Box>
           <Box py={6}>
             <Text color="black" fontWeight="semibold">
               Recent Complaints
             </Text>
             <CustomizeableTable
-              heads={complaintHeads}
-              data={mapComplaintData(complaints ?? [])}
+              heads={complaintEmployeeHeads}
+              data={complaints}
             />
           </Box>
         </Box>

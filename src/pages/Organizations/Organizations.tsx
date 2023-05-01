@@ -4,8 +4,6 @@ import { Box, Heading, Flex, Spacer, Button, Image } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { useOrganization } from "../../hooks/Organizations/useOrganization";
-import Navbar from "../../components/Navbar/Navbar";
-import { mapOrganizationData } from "../../utils/mapEntityData";
 import { organizationHeads } from "../../constant/tableHeads";
 
 export const showImage = (src) => (

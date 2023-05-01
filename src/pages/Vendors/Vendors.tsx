@@ -5,7 +5,6 @@ import CustomizeableTable from "../../components/Table/CustomizeableTable/Custom
 import { Link } from "react-router-dom";
 import { useVendor } from "../../hooks/Vendors/useVendor";
 import { VendorHeads } from "../../constant/tableHeads";
-import { mapVendorData } from "../../utils/mapEntityData";
 
 const Vendors: React.FC = () => {
   const { vendors, isSuccess } = useVendor();
@@ -28,7 +27,7 @@ const Vendors: React.FC = () => {
         {isSuccess && (
           <CustomizeableTable
             heads={VendorHeads}
-            data={mapVendorData(vendors)}
+            data={vendors}
             filterable
             selectFilter={["name", "category", "quantity"]}
           />

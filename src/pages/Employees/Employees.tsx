@@ -5,7 +5,6 @@ import CustomizeableTable from "../../components/Table/CustomizeableTable/Custom
 import { Link } from "react-router-dom";
 import { useFetchUsers } from "../../hooks/Users/useFetchUsers";
 import { employeeHeads } from "../../constant/tableHeads";
-import { mapEmployeeData } from "../../utils/mapEntityData";
 
 const Employees: React.FC = () => {
   const { users: employees, isSuccess } = useFetchUsers();
@@ -28,7 +27,7 @@ const Employees: React.FC = () => {
         {isSuccess && (
           <CustomizeableTable
             heads={employeeHeads}
-            data={mapEmployeeData(employees)}
+            data={employees}
             filterable
             selectFilter={["department"]}
           />
