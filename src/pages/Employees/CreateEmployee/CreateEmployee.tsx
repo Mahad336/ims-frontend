@@ -16,6 +16,8 @@ import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import CredentialForm from "../../../components/Form/CredentialsForm/CredentialForm";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
+import { useCreateUser } from "../../../hooks/Users/useCreateUser";
+import { useAuth } from "../../../hooks/Auth/useAuth";
 
 type Department = {
   id: number;
@@ -38,6 +40,8 @@ const CreateEmployee: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const { mutate } = useCreateUser();
+  const { user } = useAuth();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
@@ -48,8 +52,10 @@ const CreateEmployee: FC = () => {
       email,
       password,
       contact,
-      image,
+      organization: user?.organizationId,
+      imageFile: image,
     };
+    mutate(data);
     console.log("Form submitted with data:", data);
   };
 

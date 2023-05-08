@@ -16,20 +16,8 @@ import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import CredentialForm from "../../../components/Form/CredentialsForm/CredentialForm";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
-
-type Organization = {
-  id: number;
-  name: string;
-};
-
-const organizations: Organization[] = [
-  { id: 1, name: "Furniture" },
-  { id: 2, name: "Tables" },
-  { id: 3, name: "Chairs" },
-  { id: 4, name: "Electronics" },
-  { id: 5, name: "Phones" },
-  { id: 6, name: "Computers" },
-];
+import { useCreateUser } from "../../../hooks/Users/useCreateUser";
+import { useOrganizations } from "../../../hooks/Organizations/useOrganizations";
 
 const CreateAdmin = () => {
   const [name, setName] = useState<string>("");
@@ -38,6 +26,8 @@ const CreateAdmin = () => {
   const [password, setPassword] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const { organizations } = useOrganizations();
+  const { mutate, isSuccess, error } = useCreateUser();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
@@ -47,9 +37,11 @@ const CreateAdmin = () => {
       name,
       email,
       password,
+      organization,
       contact,
-      image,
+      imageFile: image,
     };
+    mutate(data);
     console.log("Form submitted with data:", data);
   };
 
@@ -78,20 +70,20 @@ const CreateAdmin = () => {
             placeholder="Full Name"
             setValue={setName}
           />
-
-          <CustomInput
-            label="Organization"
-            value={organization}
-            placeholder="Select Organization"
-            type="select"
-            options={organizations}
-            setValue={setOrganization}
-          />
-
+          {organizations && (
+            <CustomInput
+              label="Organization"
+              value={organization}
+              placeholder="Select Organization"
+              type="select"
+              options={organizations}
+              setValue={setOrganization}
+            />
+          )}
           <CustomInput
             label="Contact Number"
             value={contact}
-            placeholder="Representative Contact"
+            placeholder="Contact"
             setValue={setContact}
           />
 

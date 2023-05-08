@@ -7,7 +7,7 @@ import { useFetchUsers } from "../../hooks/Users/useFetchUsers";
 import { adminHeads } from "../../constant/tableHeads";
 import { showImage } from "../Organizations/Organizations";
 const Admins: React.FC = () => {
-  const { users, isSuccess } = useFetchUsers();
+  const { users } = useFetchUsers();
 
   return (
     <>
@@ -25,7 +25,7 @@ const Admins: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {isSuccess && (
+        {users && (
           <CustomizeableTable
             heads={adminHeads}
             data={users.map((user) => ({ ...user, src: showImage(user.src) }))}

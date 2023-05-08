@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { Box, Heading, Flex, Spacer, Button } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
-import { useItem } from "../../hooks/Inventory/useItem";
+import { useItems } from "../../hooks/Inventory/useItems";
 import { itemHeads } from "../../constant/tableHeads";
 
 const Inventory: React.FC = () => {
-  const { items, isSuccess: itemsFetched } = useItem();
+  const { items } = useItems();
 
   return (
     <>
@@ -25,7 +25,7 @@ const Inventory: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {itemsFetched && (
+        {items && (
           <CustomizeableTable
             heads={itemHeads}
             data={items}

@@ -42,18 +42,22 @@ const DetailToolbar = ({ backButtonLink, onDelete }: Props) => {
         <PopoverContent width={"min-fitcontent"}>
           <PopoverBody p={0}>
             <VStack alignItems={"flex-start"}>
-              <Button
-                variant={"ghost"}
-                leftIcon={<EditIcon mb={1} />}
-                minWidth="100%"
-              >
-                <Link to={"edit"}>Edit</Link>
-              </Button>
+              <Link to={"edit"}>
+                <Button
+                  variant={"ghost"}
+                  leftIcon={<EditIcon mb={1} />}
+                  minWidth="100%"
+                  _hover={{ backgroundColor: "transparent" }}
+                >
+                  Edit
+                </Button>
+              </Link>
 
               <Button
                 variant={"ghost"}
                 leftIcon={<DeleteIcon color={"red"} mb={1} />}
                 onClick={onDelete}
+                _hover={{ backgroundColor: "transparent" }}
               >
                 Delete
               </Button>

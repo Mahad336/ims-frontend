@@ -17,23 +17,18 @@ import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import AddressInputs from "../../../components/Form/AddressInputs/AddressInputs";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
+import { AllCountries } from "../../../constant/AllCountries";
+import { useCreateOrganization } from "../../../hooks/Organizations/useCreateOrganization";
 
-type Category = {
-  id: number;
+type Country = {
+  id: string;
   name: string;
 };
 
-const organizations: Category[] = [
-  { id: 1, name: "Furniture" },
-  { id: 2, name: "Tables" },
-  { id: 3, name: "Chairs" },
-  { id: 4, name: "Electronics" },
-  { id: 5, name: "Phones" },
-  { id: 6, name: "Computers" },
-];
-
+const countries: Country[] = AllCountries;
 const CreateOrganization = () => {
   const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [bio, setBio] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -42,6 +37,7 @@ const CreateOrganization = () => {
   const [repName, setRepName] = useState<string>("");
   const [repContact, setRepContact] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const { mutate, error, isSuccess } = useCreateOrganization();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
@@ -49,13 +45,19 @@ const CreateOrganization = () => {
 
     const data = {
       name,
+      email,
       bio,
-      address: `${address};${city};${zipCode};${selectedCountry}`,
-      repName,
-      repContact,
+      address,
+      city,
+      selectedCountry,
+      country: selectedCountry,
+      zip: zipCode,
+      representativeName: repName,
+      representativeContact: repContact,
       image,
     };
-    console.log("Form submitted with data:", data);
+
+    mutate(data);
   };
 
   return (
@@ -83,6 +85,12 @@ const CreateOrganization = () => {
             setValue={setName}
             placeholder="Name of Organization"
           />
+          <CustomInput
+            label="Email"
+            value={email}
+            setValue={setEmail}
+            placeholder="Email"
+          />
 
           <CustomInput
             label="Bio"
@@ -99,7 +107,7 @@ const CreateOrganization = () => {
             setCity={setCity}
             selectedCountry={selectedCountry}
             setSelectedCountry={setSelectedCountry}
-            organizations={organizations}
+            countries={countries}
             zipCode={zipCode}
             setZipCode={setZipCode}
           />

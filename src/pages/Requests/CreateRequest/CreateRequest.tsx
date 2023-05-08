@@ -17,29 +17,23 @@ import {
 import { Link } from "react-router-dom";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
-import { ReqTypes } from "../../../constant/RequestTypes";
-
-type Category = {
-  id: number;
-  name: string;
-  parentId: number | null;
-};
-
-const categories: Category[] = [
-  { id: 1, name: "Furniture", parentId: null },
-  { id: 2, name: "Tables", parentId: 1 },
-  { id: 3, name: "Chairs", parentId: 1 },
-  { id: 4, name: "Electronics", parentId: null },
-  { id: 5, name: "Phones", parentId: 4 },
-  { id: 6, name: "Computers", parentId: 4 },
-];
+import { ReqTypes, ReqTypesArray } from "../../../constant/RequestTypes";
+import { useAuth } from "../../../hooks/Auth/useAuth";
+import { useItems } from "../../../hooks/Inventory/useItems";
+import { useCategories } from "../../../hooks/Categories/useCategories";
+import { useCreateRequest } from "../../../hooks/Requests/useCreateRequest";
 
 const CreateRequest = () => {
   const [title, setTitle] = useState<string>("");
+  const [selectedItem, setSelectedItem] = useState<number | string>("");
   const [selectedRequestType, setSelectedRequesttype] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>("");
+  const { user } = useAuth();
+  const { categories } = useCategories();
+  const { items } = useItems();
+  const { mutate, isSuccess, error } = useCreateRequest();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
@@ -48,10 +42,12 @@ const CreateRequest = () => {
     const data = {
       title,
       description,
-      category: selectedCategory,
-      subcategory: selectedSubCategory,
-      requestType: selectedRequestType,
+      type: selectedRequestType,
+      organization: user?.organizationId,
+      submittedBy: user?.id,
+      item: Number(selectedItem),
     };
+    mutate(data);
     console.log("Form submitted with data:", data);
   };
 
@@ -82,21 +78,19 @@ const CreateRequest = () => {
             setValue={setSelectedRequesttype}
             placeholder="Select Request"
             type="select"
-            options={[
-              { id: 1, name: ReqTypes.INVENTORY_AQUISITION },
-              { id: 2, name: ReqTypes.REPAIRED },
-              { id: 3, name: ReqTypes.REPLACED },
-            ]}
+            options={ReqTypesArray}
+            useNameAsValue
           />
-
-          <CustomInput
-            label="Category"
-            value={selectedCategory}
-            setValue={setSelectedCategory}
-            placeholder="Select Category"
-            type="select"
-            options={categories.filter((c) => c.parentId === null)}
-          />
+          {categories && (
+            <CustomInput
+              label="Category"
+              value={selectedCategory}
+              setValue={setSelectedCategory}
+              placeholder="Select Category"
+              type="select"
+              options={categories.filter((c) => c.parentId === null)}
+            />
+          )}
 
           {selectedCategory && (
             <CustomInput
@@ -111,6 +105,20 @@ const CreateRequest = () => {
             />
           )}
 
+          {categories && selectedSubCategory && items && (
+            <CustomInput
+              label="Select Item"
+              value={selectedItem}
+              setValue={setSelectedItem}
+              placeholder="Select Item"
+              type="select"
+              options={items.filter(
+                (item) =>
+                  item.subCategory ===
+                  categories.find((cat) => cat.id == selectedSubCategory).name
+              )}
+            />
+          )}
           <CustomInput
             label="Description"
             value={description}

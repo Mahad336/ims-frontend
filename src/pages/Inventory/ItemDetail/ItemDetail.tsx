@@ -3,8 +3,31 @@ import { Box, VStack, StackDivider, Flex, Text } from "@chakra-ui/react";
 import ImageAndDetail from "../../../components/Detail/ImageAndDetail/ImageAndDetail";
 import CustomDetail from "../../../components/Detail/CustomDetail/CustomDetail";
 import DetailToolbar from "../../../components/Detail/DetailToolbar/DetailToolbar";
+import { useUser } from "../../../hooks/Users/useFetchUser";
+import { useParams } from "react-router-dom";
+import { useItem } from "../../../hooks/Inventory/useItem";
+import { formatDate } from "../../../utils/formattedDate";
+import { useDeleteItem } from "../../../hooks/Inventory/useDeleteItem";
 
 const ItemDetail: FC = () => {
+  const { id } = useParams();
+  const { item } = useItem(id);
+  const {
+    name,
+    serialNumber,
+    description,
+    category,
+    subcategory,
+    createdDate,
+    unitPrice,
+    currentPrice,
+    deprecatedPrice,
+    percentageDepreciation,
+    assignedTo: user,
+    vendor,
+  } = item ?? {};
+  const { deleteItem } = useDeleteItem();
+
   return (
     <Box bg="whiteAlpha.900" rounded={10} p={5} minHeight="83vh">
       <VStack
@@ -14,43 +37,33 @@ const ItemDetail: FC = () => {
       >
         <DetailToolbar
           backButtonLink="/inventory"
-          onDelete={() => {
-            console.log("deleted");
-          }}
+          onDelete={() => deleteItem(id)}
         />
         <Flex>
-          <CustomDetail
-            label="Item Name"
-            detail="Macbook Pro 13 2015"
-            firstChildWidth="50%"
-          />
+          <CustomDetail label="Item Name" detail={name} firstChildWidth="50%" />
           <CustomDetail
             label="Serial Number"
-            detail="4398765"
+            detail={serialNumber}
             firstChildWidth="50%"
           />
         </Flex>
+        <CustomDetail label="Description" detail={description} />
+        <CustomDetail label="Category" detail={category?.name} />
+        <CustomDetail label="Sub-Category" detail={subcategory?.name} />
         <CustomDetail
-          label="Description"
-          detail=" Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              convallis, elit vel tempus aliquam, dui felis sollicitudin sem, eu
-              hendrerit nisi ex eget eros. Proin eget ipsum quis nisi placerat
-              imperdiet id pulvinar nulla. Ut odio arcu, dictum in vulputate ut,
-              vehicula eu augue. Aenean tempor ultrices urna eget pretium."
+          label="Date of Purchase"
+          detail={formatDate(createdDate)}
         />
-        <CustomDetail label="Category" detail="Electronics" />
-        <CustomDetail label="Sub-Category" detail="Mouse" />
-        <CustomDetail label="Date of Purchase" detail="11/12/2021" />
-        <CustomDetail label="Unit Price" detail="Rs 150,000" />
-        <CustomDetail label="Current Price" detail="Rs 250,000" />
+        <CustomDetail label="Unit Price" detail={unitPrice} />
+        <CustomDetail label="Current Price" detail={currentPrice} />
         <Flex>
           <CustomDetail
             label="Deprecated Price"
-            detail="50,000"
+            detail={deprecatedPrice}
             firstChildWidth="50%"
           />
           <CustomDetail
-            label="Percentage Depreciaion"
+            label={percentageDepreciation}
             detail="30%"
             firstChildWidth="50%"
           />
@@ -60,18 +73,20 @@ const ItemDetail: FC = () => {
           <Text fontWeight={"semibold"} fontSize="xl" pb={10}>
             Vendor
           </Text>
-          <CustomDetail label="Name" detail="Mouse" />
+          <CustomDetail label="Name" detail={vendor?.name} />
         </>
 
         <CustomDetail label="Contact Number" detail="+923377654933" />
-        <ImageAndDetail
-          heading={"Assgined to"}
-          src={"https://bit.ly/dan-abramov"}
-          name={"Emery Siphron"}
-          department={"Development"}
-          contact={"+92373393298"}
-          email={"ugreen@Hotmail.com"}
-        />
+        {user && (
+          <ImageAndDetail
+            heading={"Assgined to"}
+            src={user?.image}
+            name={user?.name}
+            department={user?.department}
+            contact={user?.contact}
+            email={user?.email}
+          />
+        )}
       </VStack>
     </Box>
   );

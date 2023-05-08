@@ -1,15 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchVendors } from "../../services/Vendors/vendorApi";
-export const useVendor = () => {
+import { fetchVendor } from "../../services/Vendors/vendorApi";
+
+export const useVendor = (id: string) => {
   const {
-    data: vendors,
+    data: vendor,
     isLoading,
     isError,
     isSuccess,
     refetch,
-  } = useQuery(["vendors"], fetchVendors);
+  } = useQuery(["vendor", id], () => fetchVendor(id), {
+    onSuccess(data) {},
+  });
   return {
-    vendors,
+    vendor,
     isLoading,
     isError,
     isSuccess,

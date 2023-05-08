@@ -5,16 +5,8 @@ import { CategoryTable } from "../../components/Table/CategoryTable/CategoryTabl
 import { Link } from "react-router-dom";
 import { useCategoryStats } from "../../hooks/Categories/useCategoriesStats";
 
-interface Category {
-  id: number;
-  name: string;
-  vendorsCount: number;
-  subCategoryCount: number;
-  subCategories: {}[];
-}
-
 const Categories: React.FC = () => {
-  const { categoryTableStats: categories, isSuccess } = useCategoryStats();
+  const { categoryTableStats: categories } = useCategoryStats();
 
   return (
     <>
@@ -32,7 +24,7 @@ const Categories: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {isSuccess && <CategoryTable categories={categories ?? []} />}
+        {categories && <CategoryTable categories={categories ?? []} />}
       </Box>
     </>
   );

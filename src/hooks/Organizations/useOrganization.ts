@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchOrganizations } from "../../services/Organizations/organizationApi";
-import { useAuth } from "../Auth/useAuth";
+import { fetchOrganization } from "../../services/Organizations/organizationApi";
 
-export const useOrganization = () => {
-  const { user } = useAuth();
+export const useOrganization = (id: string) => {
   const {
-    data: organizations,
+    data: organization,
     isLoading,
     isError,
     isSuccess,
     refetch,
-  } = useQuery(["organizations"], fetchOrganizations);
+  } = useQuery(["organization", id], () => fetchOrganization(id), {
+    onSuccess(data) {},
+  });
   return {
-    organizations,
+    organization,
     isLoading,
     isError,
     isSuccess,

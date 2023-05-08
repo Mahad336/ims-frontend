@@ -41,6 +41,8 @@ import CategoryDetail from "./pages/Categories/CategoryDetail/CategoryDetail";
 import AdminDetail from "./pages/Admins/AdminDetail/AdminDetail";
 import OrganizationDetail from "./pages/Organizations/OrganizationDetail/OrganizationDetail";
 import EmployeeDetail from "./pages/Employees/EmployeeDetail/EmployeeDetails";
+import EditItem from "./pages/Inventory/EditItem/EditItem";
+import { UserRole } from "./constant/UserRoles";
 
 function App() {
   return (
@@ -54,46 +56,11 @@ function App() {
           <Route path="/" element={<LoginPage />} />
         </Routes>
         <Routes>
-          <Route element={<PrivateRoutes />}>
-            <Route path="employee/dashboard" element={<EmployeeDashboard />} />
-            <Route path="admin/dashboard" element={<AdminDashboard />} />
+          <Route element={<PrivateRoutes roles={[UserRole.SUPER_ADMIN]} />}>
             <Route
               path="superAdmin/dashboard"
               element={<SuperAdminDashboard />}
             />
-
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/inventory/:id" element={<ItemDetail />} />
-            <Route path="/inventory/create" element={<CreateItem />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/categories/:id" element={<CategoryDetail />} />
-            <Route path="/categories/:id/edit" element={<EditCategory />} />
-            <Route path="/categories/create" element={<AddCategories />} />
-            <Route
-              path="/categories/:id/subcategory/add"
-              element={<AddSubcategories />}
-            />
-            <Route path="/employees" element={<Employees />} />
-            <Route path="/employees/:id" element={<EmployeeDetail />} />
-            <Route path="/employees/:id/edit" element={<EditEmployee />} />
-            <Route path="/employees/create" element={<CreateEmployee />} />
-            <Route path="/requests" element={<Requests />} />
-            <Route path="/requests/:id" element={<RequestDetail />} />
-            <Route path="/requests/create" element={<CreateRequest />} />
-            <Route path="/returns" element={<Returns />} />
-            <Route path="/returns/:id" element={<ReturnDetail />} />
-            <Route path="/complaints" element={<Complaints />} />
-            <Route path="/complaints/:id" element={<ComplaintDetail />} />
-            <Route path="/complaints/create" element={<CreateComplaint />} />
-            <Route path="/vendors" element={<Vendors />} />
-            <Route path="/vendors/:id" element={<VendorDetail />} />
-            <Route path="/vendors/:id/edit" element={<EditVendor />} />
-            <Route path="/vendors/add" element={<AddVendorForm />} />
-            <Route path="/admins" element={<Admins />} />
-            <Route path="/admins/:id" element={<AdminDetail />} />
-            <Route path="/admins/:id/edit" element={<EditAdmin />} />
-            <Route path="/admins/create" element={<CreateAdmin />} />
-
             <Route path="/organizations" element={<Organizations />} />
             <Route path="/organizations/:id" element={<OrganizationDetail />} />
             <Route
@@ -104,6 +71,60 @@ function App() {
               path="/organizations/create"
               element={<CreateOrganization />}
             />
+
+            <Route path="/admins" element={<Admins />} />
+            <Route path="/admins/:id" element={<AdminDetail />} />
+            <Route path="/admins/:id/edit" element={<EditAdmin />} />
+            <Route path="/admins/create" element={<CreateAdmin />} />
+          </Route>
+
+          <Route element={<PrivateRoutes roles={[UserRole.ADMIN]} />}>
+            <Route path="admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/inventory/:id" element={<ItemDetail />} />
+            <Route path="/inventory/:id/edit" element={<EditItem />} />
+            <Route path="/inventory/create" element={<CreateItem />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/categories/:id" element={<CategoryDetail />} />
+            <Route path="/categories/:id/edit" element={<EditCategory />} />
+            <Route path="/categories/create" element={<AddCategories />} />
+            <Route
+              path="/categories/:id/subcategory/add"
+              element={<AddSubcategories />}
+            />
+            <Route path="/employees" element={<Employees />} />
+            <Route path="/employees/create" element={<CreateEmployee />} />
+            <Route path="/vendors" element={<Vendors />} />
+            <Route path="/vendors/:id" element={<VendorDetail />} />
+            <Route path="/vendors/:id/edit" element={<EditVendor />} />
+            <Route path="/vendors/add" element={<AddVendorForm />} />
+          </Route>
+
+          <Route element={<PrivateRoutes roles={[UserRole.EMPLOYEE]} />}>
+            <Route path="employee/dashboard" element={<EmployeeDashboard />} />
+          </Route>
+
+          <Route
+            element={
+              <PrivateRoutes
+                roles={[
+                  UserRole.EMPLOYEE,
+                  UserRole.ADMIN,
+                  UserRole.SUPER_ADMIN,
+                ]}
+              />
+            }
+          >
+            <Route path="/employees/:id" element={<EmployeeDetail />} />
+            <Route path="/employees/:id/edit" element={<EditEmployee />} />
+            <Route path="/requests" element={<Requests />} />
+            <Route path="/requests/:id" element={<RequestDetail />} />
+            <Route path="/requests/create" element={<CreateRequest />} />
+            <Route path="/returns" element={<Returns />} />
+            <Route path="/returns/:id" element={<ReturnDetail />} />
+            <Route path="/complaints" element={<Complaints />} />
+            <Route path="/complaints/:id" element={<ComplaintDetail />} />
+            <Route path="/complaints/create" element={<CreateComplaint />} />
           </Route>
         </Routes>
       </Router>

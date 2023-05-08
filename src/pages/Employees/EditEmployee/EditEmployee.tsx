@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -16,6 +16,10 @@ import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import CredentialForm from "../../../components/Form/CredentialsForm/CredentialForm";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
+import { useCreateUser } from "../../../hooks/Users/useCreateUser";
+import { useAuth } from "../../../hooks/Auth/useAuth";
+import { useUpdateUser } from "../../../hooks/Users/useUpdateUser";
+import { useUser } from "../../../hooks/Users/useFetchUser";
 
 type Department = {
   id: number;
@@ -32,15 +36,16 @@ const departments: Department[] = [
 ];
 
 const EditEmployee: FC = () => {
-  const { id } = useParams();
-  console.log(id);
-
   const [name, setName] = useState<string>("");
   const [department, setDepartment] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const { mutate } = useUpdateUser();
+  const { user } = useAuth();
+  const { id } = useParams();
+  const { user: userDetail } = useUser(id);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
@@ -51,10 +56,22 @@ const EditEmployee: FC = () => {
       email,
       password,
       contact,
-      image,
+      department,
+      organization: user?.organizationId,
+      imageFile: image,
     };
+    mutate({ id, userData: data });
     console.log("Form submitted with data:", data);
   };
+
+  useEffect(() => {
+    if (userDetail) {
+      setName(userDetail?.name);
+      setEmail(userDetail.email);
+      setContact(userDetail.contact);
+      setDepartment(userDetail.department);
+    }
+  }, [userDetail]);
 
   return (
     <Box bg="whiteAlpha.900 " p="5" rounded={10}>
@@ -66,15 +83,16 @@ const EditEmployee: FC = () => {
           spacing={8}
         >
           <FormToolbar
-            backButtonLink={"/employees/" + id}
-            pageTitle="Edit Employee"
+            backButtonLink="/employees"
+            pageTitle="Update Employee"
           />
-
-          <ImageUpload
-            name={"Employee's Picture"}
-            onImageChange={(e) => setImage(e.target.files?.[0])}
-          />
-
+          {userDetail && (
+            <ImageUpload
+              name={"Employee's Picture"}
+              onImageChange={(e) => setImage(e.target.files?.[0])}
+              src={userDetail?.image}
+            />
+          )}
           <CustomInput
             label="Name"
             value={name}
@@ -89,6 +107,7 @@ const EditEmployee: FC = () => {
             type="select"
             options={departments}
             setValue={setDepartment}
+            useNameAsValue
           />
 
           <CustomInput

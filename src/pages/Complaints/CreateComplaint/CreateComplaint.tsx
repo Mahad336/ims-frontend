@@ -13,25 +13,36 @@ import {
 
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
+import { useAuth } from "../../../hooks/Auth/useAuth";
+import { UserRole } from "../../../constant/UserRoles";
+import { useCreateComplaint } from "../../../hooks/Complaints/useCreateComplaint";
+import { objectToFormData } from "../../../utils/objectToFormData";
 
 const CreateComplaint = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [suggestion, setSuggestion] = useState<string>("");
+  const [images, setImages] = useState<File[]>([]);
+  const { user } = useAuth();
+  const { mutate, error, isSuccess } = useCreateComplaint();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // TODO: handle form submission
     e.preventDefault();
 
-    const data = {
+    const formData = objectToFormData({
       title,
       description,
-      suggestion,
-      attachments: images,
-    };
-    console.log("Form submitted with data:", data);
+      submittedBy: user?.id,
+      organization: user?.organizationId,
+      ...(user?.role?.name === UserRole.ADMIN
+        ? { attachments: images }
+        : { suggestion }),
+    });
+
+    mutate(formData);
+
+    console.log("Form submitted with data:", formData);
   };
-  const [images, setImages] = useState<File[]>([]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newImages = Array.from(e.target.files as Iterable<File>);
@@ -64,58 +75,68 @@ const CreateComplaint = () => {
             placeholder="Description"
             type="textarea"
           />
-
-          <CustomInput
-            label="Suggestions"
-            value={suggestion}
-            setValue={setSuggestion}
-            placeholder="Suggestions"
-            type="textarea"
-          />
-
-          <FormControl id="contact-number" display="flex" alignItems="baseline">
-            <Flex alignItems="center">
-              <FormLabel>Attachments</FormLabel>
-              <input type="file" id="file-input" onChange={handleImageChange} />
-              {images.length === 0 && (
-                <Button colorScheme="green" size="sm">
-                  <label htmlFor="file-input">Choose files</label>
-                </Button>
-              )}
-              {images.length > 0 && (
-                <Button colorScheme="green" size="sm">
-                  <label htmlFor="file-input">Add More</label>
-                </Button>
-              )}
-              {images.map((image, index) => (
-                <Box
-                  key={index}
-                  m={5}
-                  borderRadius="md"
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Image
-                    boxSize={100}
-                    objectFit="cover"
-                    src={URL.createObjectURL(image)}
-                    alt={`Image ${index}`}
-                    border="1px solid black"
-                    borderRadius="md"
-                  />
-                  <Button
-                    colorScheme="green"
-                    variant="ghost"
-                    onClick={(e) =>
-                      setImages(images.filter((e) => e !== image))
-                    }
-                  >
-                    Delete
+          {user?.role?.name === UserRole.EMPLOYEE && (
+            <CustomInput
+              label="Suggestions"
+              value={suggestion}
+              setValue={setSuggestion}
+              placeholder="Suggestions"
+              type="textarea"
+            />
+          )}
+          {user?.role?.name === UserRole.ADMIN && (
+            <FormControl
+              id="contact-number"
+              display="flex"
+              alignItems="baseline"
+            >
+              <Flex alignItems="center">
+                <FormLabel>Attachments</FormLabel>
+                <input
+                  type="file"
+                  id="file-input"
+                  onChange={handleImageChange}
+                />
+                {images.length === 0 && (
+                  <Button colorScheme="green" size="sm">
+                    <label htmlFor="file-input">Choose files</label>
                   </Button>
-                </Box>
-              ))}
-            </Flex>
-          </FormControl>
+                )}
+                {images.length > 0 && (
+                  <Button colorScheme="green" size="sm">
+                    <label htmlFor="file-input">Add More</label>
+                  </Button>
+                )}
+                {images.map((image, index) => (
+                  <Box
+                    key={index}
+                    m={5}
+                    borderRadius="md"
+                    display="flex"
+                    flexDirection="column"
+                  >
+                    <Image
+                      boxSize={100}
+                      objectFit="cover"
+                      src={URL.createObjectURL(image)}
+                      alt={`Image ${index}`}
+                      border="1px solid black"
+                      borderRadius="md"
+                    />
+                    <Button
+                      colorScheme="green"
+                      variant="ghost"
+                      onClick={(e) =>
+                        setImages(images.filter((e) => e !== image))
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                ))}
+              </Flex>
+            </FormControl>
+          )}
 
           <Spacer></Spacer>
         </VStack>

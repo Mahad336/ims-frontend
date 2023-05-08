@@ -6,9 +6,12 @@ import { Link } from "react-router-dom";
 import { useRequests } from "../../hooks/Requests/useRequests";
 import { requestHeads } from "../../constant/tableHeads";
 import { ReqTypes } from "../../constant/RequestTypes";
+import { useAuth } from "../../hooks/Auth/useAuth";
+import { UserRole } from "../../constant/UserRoles";
 const Requests: React.FC = () => {
-  const { requests, isSuccess: requestsFetched } = useRequests(
-    ReqTypes.INVENTORY_AQUISITION
+  const { user } = useAuth();
+  const { requests } = useRequests(
+    user?.role?.name === UserRole.ADMIN ? ReqTypes.INVENTORY_AQUISITION : ""
   );
 
   return (
@@ -27,12 +30,12 @@ const Requests: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {requestsFetched && (
+        {requests && user && (
           <CustomizeableTable
             heads={requestHeads}
             data={requests}
             filterable
-            selectFilter={["category"]}
+            selectFilter={user.role === UserRole.ADMIN ? ["status"] : []}
           />
         )}
       </Box>

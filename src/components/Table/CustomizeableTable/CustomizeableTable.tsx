@@ -84,7 +84,7 @@ const CustomizeableTable: React.FC<TableProps> = ({
 
   return (
     <>
-      <Flex align="center" gap={5}>
+      <Flex align="center" gap={5} pb={5}>
         {filterable && (
           <InputGroup w={300}>
             <InputLeftElement children={<Icon as={FaSearch} />} />
@@ -144,7 +144,7 @@ const CustomizeableTable: React.FC<TableProps> = ({
             {filteredDataWithSelectFilters.map((item, index) => (
               <Tr key={index}>
                 {Object.keys(item).map((key) => (
-                  <Td key={key} fontSize="small">
+                  <Td key={key} fontSize="small" isTruncated maxW={"300px"}>
                     {item.hasOwnProperty(key) ? item[key] : ""}
                   </Td>
                 ))}

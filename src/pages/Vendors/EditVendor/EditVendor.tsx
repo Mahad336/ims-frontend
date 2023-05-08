@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -16,34 +16,38 @@ import {
 } from "@chakra-ui/react";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
+import { useCategories } from "../../../hooks/Categories/useCategories";
+import { useAuth } from "../../../hooks/Auth/useAuth";
+import { useCreateVendor } from "../../../hooks/Vendors/useCreateVendor";
+import { useUpdateVendor } from "../../../hooks/Vendors/useUpdateVendor";
 import { useParams } from "react-router-dom";
-
-type Category = {
-  id: number;
-  name: string;
-  parentId: number | null;
-};
-
-const categories: Category[] = [
-  { id: 1, name: "Furniture", parentId: null },
-  { id: 2, name: "Tables", parentId: 1 },
-  { id: 3, name: "Chairs", parentId: 1 },
-  { id: 4, name: "Electronics", parentId: null },
-  { id: 5, name: "Phones", parentId: 4 },
-  { id: 6, name: "Computers", parentId: 4 },
-];
+import { useVendor } from "../../../hooks/Vendors/useVendor";
 
 const EditVendor = () => {
   const { id } = useParams();
-  console.log(id);
-  const [name, setName] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
+  const { vendor } = useVendor(id);
+  const [name, setName] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedSubcategories, setSelectedSubcategories] = useState<number[]>(
     []
   );
 
   const [showError, setShowError] = useState(false);
+  const { categories, isError } = useCategories();
+  const { user } = useAuth();
+  const { mutate } = useUpdateVendor();
+
+  useEffect(() => {
+    if (vendor) {
+      setName(vendor.name);
+      setContactNumber(vendor.contact);
+      setSelectedCategory(vendor?.categories[0]?.id);
+      setSelectedSubcategories(
+        vendor?.subcategories.map((subcategory) => subcategory?.id)
+      );
+    }
+  }, [vendor]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
@@ -56,11 +60,13 @@ const EditVendor = () => {
 
     const data = {
       name,
-      contactNumber,
-      category: selectedCategory,
+      contact: contactNumber,
+      categories: [Number(selectedCategory)],
       subcategories: selectedSubcategories,
+      organization: user?.organizationId,
     };
     console.log("Form submitted with data:", data);
+    mutate({ id, data });
   };
 
   return (
@@ -72,10 +78,7 @@ const EditVendor = () => {
           align="stretch"
           spacing={8}
         >
-          <FormToolbar
-            backButtonLink={"/vendors/" + id}
-            pageTitle="Edit Vendor"
-          />
+          <FormToolbar backButtonLink="/vendors" pageTitle="Update Vendor" />
 
           <CustomInput
             label="Name"
@@ -91,14 +94,16 @@ const EditVendor = () => {
             placeholder="Contact Number"
           />
 
-          <CustomInput
-            label="Category"
-            value={selectedCategory}
-            setValue={setSelectedCategory}
-            placeholder="Select Category"
-            type="select"
-            options={categories.filter((c) => c.parentId === null)}
-          />
+          {categories && (
+            <CustomInput
+              label="Category"
+              value={selectedCategory}
+              setValue={setSelectedCategory}
+              placeholder="Select Category"
+              type="select"
+              options={categories.filter((c) => c.parentId === null)}
+            />
+          )}
 
           {selectedCategory && (
             <FormControl
@@ -108,7 +113,6 @@ const EditVendor = () => {
             >
               <FormLabel width="20%">SubCategory</FormLabel>
               <CheckboxGroup
-                key={Date.now()}
                 value={selectedSubcategories}
                 onChange={(values) => {
                   setSelectedSubcategories(values.map(Number));
@@ -117,8 +121,8 @@ const EditVendor = () => {
               >
                 <HStack spacing="5" width="auto" rounded={10} color="gray.600">
                   {categories
-                    .filter((c) => c.parentId === Number(selectedCategory))
-                    .map((sc) => (
+                    ?.filter((c) => c.parentId === Number(selectedCategory))
+                    ?.map((sc) => (
                       <Checkbox key={sc.id} value={sc.id} colorScheme="gray">
                         {sc.name}
                       </Checkbox>

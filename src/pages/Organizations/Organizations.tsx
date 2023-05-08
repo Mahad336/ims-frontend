@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Box, Heading, Flex, Spacer, Button, Image } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
-import { useOrganization } from "../../hooks/Organizations/useOrganization";
+import { useOrganizations } from "../../hooks/Organizations/useOrganizations";
 import { organizationHeads } from "../../constant/tableHeads";
 
 export const showImage = (src) => (
@@ -11,8 +11,7 @@ export const showImage = (src) => (
 );
 
 const Organizations: React.FC = () => {
-  const { organizations, isSuccess } = useOrganization();
-  console.log(organizations ?? []);
+  const { organizations } = useOrganizations();
 
   return (
     <>
@@ -30,7 +29,7 @@ const Organizations: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {isSuccess && (
+        {organizations && (
           <CustomizeableTable
             heads={organizationHeads}
             data={organizations.map((org) => ({

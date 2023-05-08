@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
-import Navbar from "../../components/Navbar/Navbar";
 import { useAuth } from "../../hooks/Auth/useAuth";
 import { UserRole } from "../../constant/UserRoles";
 import { useComplaints } from "../../hooks/Complaints/useComplaints";
@@ -24,10 +23,12 @@ import {
   complaintSuperAdminHeads,
   complaintAdminHeads,
 } from "../../constant/tableHeads";
+import { useState } from "react";
 
 const Complaints = () => {
+  const [tabIndex, setTabIndex] = useState(1);
   const { user } = useAuth();
-  const { complaints, isSuccess } = useComplaints();
+  const { complaints } = useComplaints();
   const isAdmin = user?.role.name === UserRole.ADMIN;
   const isSuperAdmin = user?.role.name === UserRole.SUPER_ADMIN;
   const data = complaints && isAdmin ? null : complaints;
@@ -37,15 +38,19 @@ const Complaints = () => {
           receivedComplaints: complaints?.receivedComplaints,
           submittedComplaints: complaints?.submittedComplaints,
         }
-      : {};
+      : null;
+
+  const handleTabChange = (index: number) => {
+    setTabIndex(index);
+  };
 
   return (
     <Box bg="whiteAlpha.900" rounded={10} p={5} minHeight="83vh">
-      <Flex align="center" mb={4}>
+      <Flex align="center" mb={4} justifyContent="space-between">
         <Heading size="md" mr={4}>
           Complaints
         </Heading>
-        {isAdmin && isSuccess && (
+        {tabIndex === 1 && (
           <Link to="create">
             <Button
               leftIcon={<Icon as={AiOutlinePlus} boxSize="22px" />}
@@ -57,9 +62,9 @@ const Complaints = () => {
           </Link>
         )}
       </Flex>
-      {isAdmin && isSuccess && (
-        <Tabs orientation="vertical" variant="none" width="100%">
-          <TabList my={9} gap={2}>
+      {adminData && (
+        <Tabs orientation="vertical" variant="none" onChange={handleTabChange}>
+          <TabList my={19} gap={2}>
             <Tab
               textAlign="start"
               rounded="lg"
@@ -83,7 +88,7 @@ const Complaints = () => {
             <TabPanel>
               <CustomizeableTable
                 heads={complaintAdminHeads}
-                data={adminData.receivedComplaints}
+                data={adminData?.receivedComplaints ?? []}
                 selectFilter={["status"]}
                 filterable
               />
@@ -91,7 +96,7 @@ const Complaints = () => {
             <TabPanel>
               <CustomizeableTable
                 heads={complaintEmployeeHeads}
-                data={adminData.submittedComplaints}
+                data={adminData?.submittedComplaints ?? []}
                 selectFilter={["status"]}
                 filterable
               />
@@ -99,13 +104,17 @@ const Complaints = () => {
           </TabPanels>
         </Tabs>
       )}
-      {!isAdmin && isSuccess && data && (
+      {data && (
         <CustomizeableTable
           heads={
             isSuperAdmin ? complaintSuperAdminHeads : complaintEmployeeHeads
           }
           data={data}
-          selectFilter={["status"]}
+          selectFilter={
+            user.role.name !== UserRole.EMPLOYEE
+              ? ["status", "organization"]
+              : []
+          }
           filterable
         />
       )}

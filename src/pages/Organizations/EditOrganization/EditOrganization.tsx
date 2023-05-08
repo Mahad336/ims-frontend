@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -12,31 +12,26 @@ import {
   Box,
   Heading,
 } from "@chakra-ui/react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import AddressInputs from "../../../components/Form/AddressInputs/AddressInputs";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
+import { AllCountries } from "../../../constant/AllCountries";
+import { useCreateOrganization } from "../../../hooks/Organizations/useCreateOrganization";
+import { useUpdateOrganization } from "../../../hooks/Organizations/useUpdateOrganization";
+import { objectToFormData } from "../../../utils/objectToFormData";
+import { useOrganization } from "../../../hooks/Organizations/useOrganization";
 
-type Category = {
-  id: number;
+type Country = {
+  id: string;
   name: string;
 };
 
-const organizations: Category[] = [
-  { id: 1, name: "Furniture" },
-  { id: 2, name: "Tables" },
-  { id: 3, name: "Chairs" },
-  { id: 4, name: "Electronics" },
-  { id: 5, name: "Phones" },
-  { id: 6, name: "Computers" },
-];
-
+const countries: Country[] = AllCountries;
 const EditOrganization = () => {
-  const { id } = useParams();
-  console.log(id);
-
   const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [bio, setBio] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -45,6 +40,9 @@ const EditOrganization = () => {
   const [repName, setRepName] = useState<string>("");
   const [repContact, setRepContact] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const { mutate, error, isSuccess } = useUpdateOrganization();
+  const { id } = useParams();
+  const { organization } = useOrganization(id);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
@@ -52,14 +50,34 @@ const EditOrganization = () => {
 
     const data = {
       name,
+      email,
       bio,
-      address: `${address};${city};${zipCode};${selectedCountry}`,
-      repName,
-      repContact,
+      address,
+      city,
+      selectedCountry,
+      country: selectedCountry,
+      zip: zipCode,
+      representativeName: repName,
+      representativeContact: repContact,
       image,
     };
-    console.log("Form submitted with data:", data);
+
+    mutate({ id, orgData: objectToFormData(data) });
   };
+
+  useEffect(() => {
+    if (organization) {
+      setName(organization.name);
+      setEmail(organization.email);
+      setBio(organization.bio);
+      setAddress(organization.address);
+      setCity(organization.city);
+      setSelectedCountry(organization.country);
+      setZipCode(organization.zip);
+      setRepName(organization.representativeName);
+      setRepContact(organization.representativeContact);
+    }
+  }, [organization]);
 
   return (
     <Box bg="whiteAlpha.900 " p="5" rounded={10}>
@@ -71,20 +89,29 @@ const EditOrganization = () => {
           spacing={8}
         >
           <FormToolbar
-            backButtonLink={"organizations/" + id}
-            pageTitle="Edit Organization"
+            backButtonLink="organizations"
+            pageTitle="Update Organization"
           ></FormToolbar>
 
-          <ImageUpload
-            name={"Organization's Logo"}
-            onImageChange={(e) => setImage(e.target.files?.[0])}
-          />
+          {organization && (
+            <ImageUpload
+              name={"Organization's Logo"}
+              onImageChange={(e) => setImage(e.target.files?.[0])}
+              src={organization?.image}
+            />
+          )}
 
           <CustomInput
             label="Name of Organization"
             value={name}
             setValue={setName}
             placeholder="Name of Organization"
+          />
+          <CustomInput
+            label="Email"
+            value={email}
+            setValue={setEmail}
+            placeholder="Email"
           />
 
           <CustomInput
@@ -102,7 +129,7 @@ const EditOrganization = () => {
             setCity={setCity}
             selectedCountry={selectedCountry}
             setSelectedCountry={setSelectedCountry}
-            organizations={organizations}
+            countries={countries}
             zipCode={zipCode}
             setZipCode={setZipCode}
           />

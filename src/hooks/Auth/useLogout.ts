@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../../services/Auth/authApi";
 import { useNavigate } from "react-router-dom";
-import { useOrganization } from "../Organizations/useOrganization";
 
 const useLogout = () => {
   const queryClient = useQueryClient();
@@ -10,11 +9,7 @@ const useLogout = () => {
 
   return useMutation(logout, {
     onSuccess: () => {
-      //Invalidate the user query cache
-      queryClient.setQueryData(["currentUser"], null);
-      queryClient.setQueryData(["complaints"], null);
-      queryClient.setQueryData(["organizations"], null);
-      queryClient.setQueryData(["requests"], null);
+      queryClient.clear();
       navigate("/");
 
       // Redirect to login page or do anything you want after successful logout

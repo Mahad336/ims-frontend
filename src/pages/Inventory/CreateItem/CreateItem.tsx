@@ -17,31 +17,10 @@ import {
 import { Link } from "react-router-dom";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
-
-type Category = {
-  id: number;
-  name: string;
-  parentId: number | null;
-};
-type Vendor = {
-  id: number;
-  name: string;
-};
-
-const categories: Category[] = [
-  { id: 1, name: "Furniture", parentId: null },
-  { id: 2, name: "Tables", parentId: 1 },
-  { id: 3, name: "Chairs", parentId: 1 },
-  { id: 4, name: "Electronics", parentId: null },
-  { id: 5, name: "Phones", parentId: 4 },
-  { id: 6, name: "Computers", parentId: 4 },
-];
-
-const vendors = [
-  { id: 1, name: "Mahad Supplier" },
-  { id: 2, name: "Hanzla Supplier" },
-  { id: 3, name: "Abdullah Supplier" },
-];
+import { useAuth } from "../../../hooks/Auth/useAuth";
+import { useCategories } from "../../../hooks/Categories/useCategories";
+import { useVendors } from "../../../hooks/Vendors/useVendors";
+import { useCreateItem } from "../../../hooks/Inventory/useCreateItem";
 
 const CreateItem = () => {
   const [itemName, setItemName] = useState<string>("");
@@ -51,20 +30,27 @@ const CreateItem = () => {
   const [selectedVendor, setSelectedVendor] = useState<string>("");
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const { user } = useAuth();
+  const { categories } = useCategories();
+  const { vendors } = useVendors();
+  const { mutate, isSuccess, error } = useCreateItem();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
 
     const data = {
-      itemName,
+      name: itemName,
       serialNumber,
-      price,
-      vendor: selectedVendor,
+      unitPrice: Number(price),
+      currentPrice: Number(price),
+      vendor: Number(selectedVendor),
       description,
-      category: selectedCategory,
-      SubCategory: selectedSubCategory,
+      category: Number(selectedCategory),
+      subcategory: Number(selectedSubCategory),
+      organization: user?.organizationId,
     };
+    mutate(data);
     console.log("Form submitted with data:", data);
   };
 
@@ -103,24 +89,33 @@ const CreateItem = () => {
             placeholder="Description"
             type="textarea"
           />
+          {vendors && (
+            <CustomInput
+              label="Select Vendor"
+              value={selectedVendor}
+              setValue={setSelectedVendor}
+              placeholder="Select Vendor"
+              type="select"
+              options={vendors}
+            />
+          )}
 
-          <CustomInput
-            label="Request Type"
-            value={selectedVendor}
-            setValue={setSelectedVendor}
-            placeholder="Select Request"
-            type="select"
-            options={vendors}
-          />
-
-          <CustomInput
-            label="Category"
-            value={selectedCategory}
-            setValue={setSelectedCategory}
-            placeholder="Select Category"
-            type="select"
-            options={categories.filter((c) => c.parentId === null)}
-          />
+          {categories && selectedVendor && vendors && (
+            <CustomInput
+              label="Category"
+              value={selectedCategory}
+              setValue={setSelectedCategory}
+              placeholder="Select Category"
+              type="select"
+              options={categories?.filter(
+                (c) =>
+                  c?.parentId == null &&
+                  vendors
+                    ?.find((vendor) => vendor?.id == Number(selectedVendor))
+                    ?.categories?.includes(c?.id)
+              )}
+            />
+          )}
 
           {selectedCategory && (
             <CustomInput

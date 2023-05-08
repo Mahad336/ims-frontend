@@ -13,9 +13,30 @@ import {
 } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import ImageAndDetail from "../../../components/Detail/ImageAndDetail/ImageAndDetail";
+import { useComplaint } from "../../../hooks/Complaints/useComplaint";
+import { useParams } from "react-router-dom";
+import { formatDate } from "../../../utils/formattedDate";
+import { useDeleteComplaint } from "../../../hooks/Complaints/useDeleteComplaint";
+import { useUpdateComplaint } from "../../../hooks/Complaints/useUpdateComplaint";
 type Props = {};
 
 const ComplaintDetail: FC<Props> = () => {
+  const { id } = useParams();
+  const { complaint } = useComplaint(id);
+  const {
+    status,
+    description,
+    attachments,
+    submittedBy: user,
+    organization,
+    createdDate,
+  } = complaint ?? {};
+  const { mutate } = useUpdateComplaint();
+
+  const handleResolveComplaint = () => {
+    mutate({ id, complaintData: { status: "resolved" } });
+  };
+
   return (
     <Box bg="whiteAlpha.900" rounded={10} p={5} minHeight="83vh">
       <VStack
@@ -28,13 +49,19 @@ const ComplaintDetail: FC<Props> = () => {
             <Button leftIcon={<ArrowBackIcon />} variant="ghost" size={"sm"}>
               Back
             </Button>
-            <Heading fontWeight="medium">Complaint ID: 9624</Heading>
+            <Heading fontWeight="medium">Complaint ID: {id}</Heading>
             <Button colorScheme={"blue"} px={5} size={"sm"}>
-              Pending
+              {status}
             </Button>
-            <Text>Submission Date: 11/12/22</Text>
+            <Text>Submission Date: {formatDate(createdDate)}</Text>
           </Flex>
-          <Button colorScheme={"green"} p={5} rounded="xl" size={"sm"}>
+          <Button
+            colorScheme={"green"}
+            p={5}
+            rounded="xl"
+            size={"sm"}
+            onClick={handleResolveComplaint}
+          >
             Mark as Resolved
           </Button>
         </Flex>
@@ -43,61 +70,38 @@ const ComplaintDetail: FC<Props> = () => {
             Description
           </Text>
           <VStack width={"60%"} alignItems="start">
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas
-              convallis, elit vel tempus aliquam, dui felis sollicitudin sem, eu
-              hendrerit nisi ex eget eros. Proin eget ipsum quis nisi placerat
-              imperdiet id pulvinar nulla. Ut odio arcu, dictum in vulputate ut,
-              vehicula eu augue. Aenean tempor ultrices urna eget pretium.
-              Suspendisse feugiat egestas nisi a pharetra. Fusce ac nisl
-              commodo, sodales diam nec, pharetra neque. Nunc pulvinar ligula eu
-              neque aliquet auctor. In laoreet, diam sit amet commodo vulputate,
-              mauris elit gravida justo, et sodales ante lorem vitae dui. Nullam
-              fringilla lobortis justo, at molestie libero cursus vel. Nullam
-              mattis purus quis hendrerit vehicula. Aliquam cursus magna eget
-              ipsum tempor, mattis convallis odio porta. Morbi finibus mauris ut
-              nulla consectetur accumsan. Vestibulum aliquam diam nec elit
-              volutpat, sit amet pellentesque quam venenatis. Interdum et
-              malesuada fames ac ante ipsum primis in faucibus. Vivamus
-              efficitur malesuada nunc, eget venenatis lorem laoreet cursus.
-              Nullam feugiat aliquet lacus eget venenatis. Integer vehicula sem
-              nec justo pellentesque elementum. Nulla aliquam tristique
-              bibendum. Nunc ultrices lectus ante. Nullam ultrices lacus vitae
-              efficitur rhoncus. Nulla vitae pellentesque neque. Cras venenatis,
-              risus ac auctor luctus, sapien enim porta neque, sit amet mollis
-              justo tellus sed est. Nam ipsum ligula, sodales dignissim elit in,
-              tincidunt blandit massa. Quisque aliquam molestie hendrerit.
-              Integer lacus dui, auctor sit amet nibh fermentum, scelerisque
-              consequat odio. Donec ornare scelerisque ipsum, eget venenatis
-              neque sagittis vitae
-            </Text>
+            <Text>{description}</Text>
             <VStack alignItems="start">
               <Text fontWeight={"semibold"}>Attachments</Text>
-              <Box boxSize="75px">
-                <Image
-                  src="https://bit.ly/dan-abramov"
-                  alt="Dan Abramov"
-                  rounded="lg"
-                  objectFit="cover"
-                />
+              <Box display={"flex"} flexDirection={"row"} gap={5}>
+                {attachments?.map((attachment, index) => (
+                  <Image
+                    key={index}
+                    src={attachment}
+                    alt="attachment Loading"
+                    rounded="lg"
+                    objectFit="cover"
+                    boxSize={"90px"}
+                  />
+                ))}
               </Box>
             </VStack>
           </VStack>
         </Flex>
         <ImageAndDetail
           heading={"Complaint Submitted by"}
-          src={"https://bit.ly/dan-abramov"}
-          name={"Emery Siphron"}
-          department={"Development"}
-          contact={"+92373393298"}
-          email={"ugreen@Hotmail.com"}
+          src={user?.image}
+          name={user?.name}
+          department={user?.department}
+          contact={user?.contact}
+          email={user?.email}
         />
 
         <ImageAndDetail
           heading={"Organization"}
-          src={"https://picsum.photos/200/300?random=3"}
-          name={"TechSwipe Pvt Limited"}
-          email={"ugreen@Hotmail.com"}
+          src={organization?.image}
+          name={organization?.name}
+          email={organization?.email}
         />
       </VStack>
     </Box>

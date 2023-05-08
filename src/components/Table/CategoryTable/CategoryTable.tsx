@@ -23,6 +23,7 @@ import {
 import CustomizeableTable from "../CustomizeableTable/CustomizeableTable";
 import { Link } from "react-router-dom";
 import { SubCategoryHeads } from "../../../constant/tableHeads";
+import { useDeleteCategory } from "../../../hooks/Categories/useDeleteCategory";
 
 interface Category {
   id: number;
@@ -30,16 +31,6 @@ interface Category {
   vendorsCount: number;
   subCategoryCount: number;
   subCategories: {}[];
-}
-
-interface Subcategory {
-  id: number;
-  name: string;
-  vendorNames: string[];
-  quantity: number;
-  assigned: number;
-  unassigned: number;
-  faulty: number;
 }
 
 interface RowProps {
@@ -51,14 +42,15 @@ const Row = ({ category }: RowProps) => {
 
   const toggleCollapse = () => setIsOpen(!isOpen);
 
+  const { deleteCategory } = useDeleteCategory();
+
   const handleEdit = () => {
     // handle edit action here
     console.log(`Editing category ${category.id}`);
   };
 
   const handleDelete = () => {
-    // handle delete action here
-    console.log(`Deleting category ${category.id}`);
+    deleteCategory(String(category?.id));
   };
 
   return (

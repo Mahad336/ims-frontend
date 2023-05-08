@@ -19,30 +19,11 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { mutate, isSuccess, data } = useLogin();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     mutate({ email, password });
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      switch (data?.role?.name) {
-        case UserRole.SUPER_ADMIN:
-          navigate("/superAdmin/dashboard");
-          break;
-        case UserRole.ADMIN:
-          navigate("/admin/dashboard");
-          break;
-        case UserRole.EMPLOYEE:
-          navigate("/employee/dashboard");
-          break;
-        default:
-          break;
-      }
-    }
-  }, [isSuccess, data, navigate]);
 
   return (
     <Flex

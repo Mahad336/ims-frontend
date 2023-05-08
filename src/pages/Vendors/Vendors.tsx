@@ -3,11 +3,14 @@ import { Box, Heading, Flex, Spacer, Button } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import CustomizeableTable from "../../components/Table/CustomizeableTable/CustomizeableTable";
 import { Link } from "react-router-dom";
-import { useVendor } from "../../hooks/Vendors/useVendor";
+import { useVendors } from "../../hooks/Vendors/useVendors";
 import { VendorHeads } from "../../constant/tableHeads";
 
 const Vendors: React.FC = () => {
-  const { vendors, isSuccess } = useVendor();
+  const { vendors } = useVendors();
+
+  //deleting categories array we getting which we used in create Item
+  vendors?.forEach((vendor) => delete vendor?.categories);
   return (
     <>
       <Box bg="whiteAlpha.900" rounded={10} p={5} height="83vh">
@@ -24,12 +27,12 @@ const Vendors: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {isSuccess && (
+        {vendors && (
           <CustomizeableTable
             heads={VendorHeads}
             data={vendors}
             filterable
-            selectFilter={["name", "category", "quantity"]}
+            selectFilter={["category", "subcategory"]}
           />
         )}
       </Box>

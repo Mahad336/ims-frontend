@@ -1,16 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchItems } from "../../services/Inventory/inventoryApi";
-
-export const useItem = () => {
+import { fetchItem } from "../../services/Inventory/inventoryApi";
+export const useItem = (id: string) => {
   const {
-    data: items,
+    data: item,
     isLoading,
     isError,
     isSuccess,
     refetch,
-  } = useQuery(["items"], fetchItems);
+  } = useQuery(["item", id], () => fetchItem(id), {
+    onSuccess(data) {
+      console.log(data);
+    },
+  });
   return {
-    items,
+    item,
     isLoading,
     isError,
     isSuccess,

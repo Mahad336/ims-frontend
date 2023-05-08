@@ -9,7 +9,7 @@ interface AddressProps {
   setCity: (value: string) => void;
   selectedCountry: string;
   setSelectedCountry: (value: string) => void;
-  organizations: { id: number; name: string }[];
+  countries: { id: string; name: string }[];
   zipCode: string;
   setZipCode: (value: string) => void;
 }
@@ -21,7 +21,7 @@ export default function AddressInputs({
   setCity,
   selectedCountry,
   setSelectedCountry,
-  organizations,
+  countries,
   zipCode,
   setZipCode,
 }: AddressProps) {
@@ -45,7 +45,7 @@ export default function AddressInputs({
         setValue={setSelectedCountry}
         placeholder="Select Country"
         type="select"
-        options={organizations}
+        options={countries}
       />
       <CustomInput
         isRequired={false}

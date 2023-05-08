@@ -7,7 +7,7 @@ import { useFetchUsers } from "../../hooks/Users/useFetchUsers";
 import { employeeHeads } from "../../constant/tableHeads";
 
 const Employees: React.FC = () => {
-  const { users: employees, isSuccess } = useFetchUsers();
+  const { users: employees } = useFetchUsers();
   return (
     <>
       <Box bg="whiteAlpha.900" rounded={10} p={5} height="83vh">
@@ -24,7 +24,7 @@ const Employees: React.FC = () => {
             </Button>
           </Link>
         </Flex>
-        {isSuccess && (
+        {employees && (
           <CustomizeableTable
             heads={employeeHeads}
             data={employees}

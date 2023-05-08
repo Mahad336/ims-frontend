@@ -5,8 +5,7 @@ import { useRequests } from "../../hooks/Requests/useRequests";
 import { requestHeads } from "../../constant/tableHeads";
 
 const Returns: React.FC = () => {
-  const { requests: returns, isSuccess: requestsFetched } =
-    useRequests("return");
+  const { requests: returns } = useRequests("return");
 
   return (
     <>
@@ -15,12 +14,12 @@ const Returns: React.FC = () => {
           <Heading size="md">Requests</Heading>
           <Spacer></Spacer>
         </Flex>
-        {requestsFetched && (
+        {returns && (
           <CustomizeableTable
             heads={requestHeads}
             data={returns}
             filterable
-            selectFilter={["category", "status"]}
+            selectFilter={["type", "status"]}
           />
         )}
       </Box>

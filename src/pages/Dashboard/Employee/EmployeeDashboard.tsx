@@ -11,12 +11,11 @@ import {
 } from "../../../constant/tableHeads";
 
 const EmployeeDashboard: React.FC = () => {
-  const { users: employee, isSuccess: userFetched } = useFetchUsers();
-  const { complaints, isSuccess: complaintsFetched } = useComplaints();
-  const { requests, isSuccess: requestsFetched } = useRequests();
+  const { users: employee } = useFetchUsers();
+  const { complaints } = useComplaints();
+  const { requests } = useRequests();
 
-  const dashboardStatsFetched =
-    userFetched && complaintsFetched && requestsFetched;
+  const dashboardStatsFetched = employee && complaints && requests;
 
   return (
     <>

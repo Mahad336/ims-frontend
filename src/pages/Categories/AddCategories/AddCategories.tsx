@@ -11,10 +11,14 @@ import {
 import { Link } from "react-router-dom";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
+import { useAuth } from "../../../hooks/Auth/useAuth";
+import { useCreateCategory } from "../../../hooks/Categories/useCreateCategory";
 
 const AddCategories = () => {
   const [name, setName] = useState<string>("");
   const [subCategories, setSubCategories] = useState<string[]>([""]);
+  const { user } = useAuth();
+  const { mutate, isSuccess, error } = useCreateCategory();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,7 +26,9 @@ const AddCategories = () => {
     const data = {
       name,
       subCategories,
+      organization: user?.organizationId,
     };
+    mutate(data);
     console.log("Form submitted with data:", data);
   };
 

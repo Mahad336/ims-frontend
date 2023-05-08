@@ -22,19 +22,19 @@ interface Item {
 }
 
 const AdminDashboard: React.FC = () => {
-  const { complaints, isSuccess: complaintsFetched } = useComplaints();
-  const { dashboardStats, isSuccess: dashboardStatsFetched } =
-    useDashboardStats();
-  const { dashboardGraphData, isSuccess: dashboardGraphDataFetched } =
-    useDashboardGraphData();
+  const { complaints } = useComplaints();
+  const { dashboardStats } = useDashboardStats();
+  const { dashboardGraphData } = useDashboardGraphData();
+  const dashboardDataFetched =
+    complaints && dashboardStats && dashboardGraphData;
 
   return (
     <>
-      <Box bg="whiteAlpha.900" rounded={10} p={5}>
-        <Heading size="md">AdminDashboard</Heading>
-        {dashboardStatsFetched && <DashboardStats data={dashboardStats} />}
+      {dashboardDataFetched && (
+        <Box bg="whiteAlpha.900" rounded={10} p={5}>
+          <Heading size="md">AdminDashboard</Heading>
+          <DashboardStats data={dashboardStats} />
 
-        {dashboardGraphDataFetched && (
           <Box
             borderBottom="1px solid"
             borderBottomColor="gray.300"
@@ -49,17 +49,17 @@ const AdminDashboard: React.FC = () => {
               data={dashboardGraphData.complaintsMonthData}
             ></BarChartComplaint>
           </Box>
-        )}
-        <Box py={12}>
-          <Text color="black">Recent Complaints</Text>
-          {complaintsFetched && (
+
+          <Box py={12}>
+            <Text color="black">Recent Complaints</Text>
+
             <CustomizeableTable
               heads={complaintAdminHeads}
               data={complaints.receivedComplaints}
             />
-          )}
+          </Box>
         </Box>
-      </Box>
+      )}
     </>
   );
 };

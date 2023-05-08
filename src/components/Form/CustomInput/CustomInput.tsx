@@ -13,9 +13,10 @@ interface CustomInputProps {
   setValue: (value: string) => void;
   placeholder: string;
   type?: "input" | "textarea" | "select";
-  options?: { id: number; name: string }[];
+  options?: { id: number | string; name: string }[];
   minHeight?: [string, string, string];
   isRequired?: boolean;
+  useNameAsValue?: boolean;
 }
 
 export default function CustomInput({
@@ -27,6 +28,7 @@ export default function CustomInput({
   options = [],
   minHeight = ["30px", "70px", "160px"],
   isRequired = true,
+  useNameAsValue = false,
 }: CustomInputProps) {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -60,7 +62,11 @@ export default function CustomInput({
           rounded={10}
         >
           {options.map((option) => (
-            <option key={option.id} label={option.name} value={option.id}>
+            <option
+              key={option.id}
+              label={option.name}
+              value={useNameAsValue ? option.name : option.id}
+            >
               {option.name}
             </option>
           ))}

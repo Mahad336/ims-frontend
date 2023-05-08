@@ -4,11 +4,12 @@ import { MdOutlineImage } from "react-icons/md";
 
 interface Props {
   name: string;
+  src?: string;
   onImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const ImageUpload = ({ name, onImageChange }: Props) => {
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+const ImageUpload = ({ name, onImageChange, src }: Props) => {
+  const [imageUrl, setImageUrl] = useState<string | undefined>(src ?? "");
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
