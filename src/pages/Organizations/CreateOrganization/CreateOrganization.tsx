@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import {
   FormControl,
   FormLabel,
@@ -27,37 +27,30 @@ type Country = {
 
 const countries: Country[] = AllCountries;
 const CreateOrganization = () => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [bio, setBio] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [zipCode, setZipCode] = useState<string>("");
-  const [selectedCountry, setSelectedCountry] = useState<string>("");
-  const [repName, setRepName] = useState<string>("");
-  const [repContact, setRepContact] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
   const { mutate, error, isSuccess } = useCreateOrganization();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    bio: "",
+    address: "",
+    city: "",
+    country: "",
+    zip: "",
+    representativeName: "",
+    representativeContact: " ",
+    image: null,
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
 
-    const data = {
-      name,
-      email,
-      bio,
-      address,
-      city,
-      selectedCountry,
-      country: selectedCountry,
-      zip: zipCode,
-      representativeName: repName,
-      representativeContact: repContact,
-      image,
-    };
-
-    mutate(data);
+    mutate(formData);
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -76,54 +69,55 @@ const CreateOrganization = () => {
 
           <ImageUpload
             name={"Organization's Logo"}
-            onImageChange={(e) => setImage(e.target.files?.[0])}
+            onImageChange={(e) =>
+              setFormData({ ...formData, image: e.target.files?.[0] })
+            }
           />
 
           <CustomInput
+            value={formData.name}
             label="Name of Organization"
-            value={name}
-            setValue={setName}
+            name="name"
             placeholder="Name of Organization"
+            handleChange={handleChange}
           />
           <CustomInput
+            value={formData.email}
             label="Email"
-            value={email}
-            setValue={setEmail}
+            name="email"
             placeholder="Email"
+            handleChange={handleChange}
           />
 
           <CustomInput
+            value={formData.bio}
             label="Bio"
-            value={bio}
-            setValue={setBio}
+            name="bio"
             placeholder="Bio"
             type="textarea"
+            handleChange={handleChange}
           />
 
           <AddressInputs
-            address={address}
-            setAddress={setAddress}
-            city={city}
-            setCity={setCity}
-            selectedCountry={selectedCountry}
-            setSelectedCountry={setSelectedCountry}
             countries={countries}
-            zipCode={zipCode}
-            setZipCode={setZipCode}
+            formData={formData}
+            handleChange={handleChange}
           />
 
           <CustomInput
+            value={formData.representativeName}
+            name="representativeName"
             label="Representative Name"
-            value={repName}
-            setValue={setRepName}
             placeholder="Representative Name"
+            handleChange={handleChange}
           />
 
           <CustomInput
+            value={formData.representativeContact}
+            name="representativeContact"
             label="Representative Contact"
-            value={repContact}
-            setValue={setRepContact}
             placeholder="Representative Contact"
+            handleChange={handleChange}
           />
 
           <Spacer></Spacer>

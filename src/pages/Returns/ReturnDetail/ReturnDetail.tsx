@@ -30,7 +30,7 @@ const ReturnDetail: FC = () => {
     submittedBy: user,
     createdDate,
   } = request ?? {};
-  request && console.log(request);
+
   const { mutate } = useUpdateRequest();
 
   const handleRejectRequest = () => {

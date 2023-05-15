@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState, ChangeEvent, useEffect } from "react";
 import {
   FormControl,
   FormLabel,
@@ -16,10 +16,10 @@ import ImageUpload from "../../../components/Form/ImageUpload/ImageUpload";
 import CredentialForm from "../../../components/Form/CredentialsForm/CredentialForm";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
-import { useCreateUser } from "../../../hooks/Users/useCreateUser";
 import { useAuth } from "../../../hooks/Auth/useAuth";
-import { useUpdateUser } from "../../../hooks/Users/useUpdateUser";
 import { useUser } from "../../../hooks/Users/useFetchUser";
+import { getUpdatedFormData } from "../../../utils/getUpdatedFormData";
+import { useUpdateUser } from "../../../hooks/Users/useUpdateUser";
 
 type Department = {
   id: number;
@@ -35,41 +35,39 @@ const departments: Department[] = [
   { id: 6, name: "Human Resource" },
 ];
 
-const EditEmployee: FC = () => {
-  const [name, setName] = useState<string>("");
-  const [department, setDepartment] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [contact, setContact] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
+const CreateEmployee: FC = () => {
   const { mutate } = useUpdateUser();
   const { user } = useAuth();
+  const [formData, setFormData] = useState({
+    name: "",
+    department: "",
+    email: "",
+    password: "",
+    contact: "",
+    imageFile: null,
+    organization: user?.organizationId,
+  });
   const { id } = useParams();
   const { user: userDetail } = useUser(id);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
-
-    const data = {
-      name,
-      email,
-      password,
-      contact,
-      department,
-      organization: user?.organizationId,
-      imageFile: image,
-    };
-    mutate({ id, userData: data });
-    console.log("Form submitted with data:", data);
+    mutate({
+      id,
+      userData: { ...formData, organization: formData.organization.id },
+    });
+    console.log("Form submitted with data:", formData);
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
     if (userDetail) {
-      setName(userDetail?.name);
-      setEmail(userDetail.email);
-      setContact(userDetail.contact);
-      setDepartment(userDetail.department);
+      setFormData(getUpdatedFormData(formData, userDetail));
     }
   }, [userDetail]);
 
@@ -86,42 +84,46 @@ const EditEmployee: FC = () => {
             backButtonLink="/employees"
             pageTitle="Update Employee"
           />
-          {userDetail && (
+          {
             <ImageUpload
               name={"Employee's Picture"}
-              onImageChange={(e) => setImage(e.target.files?.[0])}
-              src={userDetail?.image}
+              onImageChange={(e) =>
+                setFormData({ ...formData, imageFile: e.target.files?.[0] })
+              }
+              src={user?.image}
             />
-          )}
+          }
           <CustomInput
             label="Name"
-            value={name}
+            value={formData.name}
+            name="name"
             placeholder="Full Name"
-            setValue={setName}
+            handleChange={handleChange}
           />
 
           <CustomInput
+            name="department"
             label="Department"
-            value={department}
+            value={formData.department}
             placeholder="Select Department"
             type="select"
             options={departments}
-            setValue={setDepartment}
+            handleChange={handleChange}
             useNameAsValue
           />
 
           <CustomInput
+            name="contact"
             label="Contact Number"
-            value={contact}
+            value={formData.contact}
             placeholder="Representative Contact"
-            setValue={setContact}
+            handleChange={handleChange}
           />
 
           <CredentialForm
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
+            email={formData.email}
+            password={formData.password}
+            handleChange={handleChange}
           />
 
           <Spacer></Spacer>
@@ -131,4 +133,4 @@ const EditEmployee: FC = () => {
   );
 };
 
-export default EditEmployee;
+export default CreateEmployee;

@@ -38,6 +38,7 @@ const Organizations: React.FC = () => {
             }))}
             filterable
             selectFilter={["location"]}
+            viewLink="organizations"
           />
         )}
       </Box>

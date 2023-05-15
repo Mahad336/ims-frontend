@@ -13,7 +13,6 @@ export const useCreateCategory = () => {
         queryClient.refetchQueries(["categories"]);
         queryClient.refetchQueries(["category_stats"]);
         navigate("/categories");
-        console.log(data);
       },
     }
   );

@@ -33,6 +33,7 @@ const Vendors: React.FC = () => {
             data={vendors}
             filterable
             selectFilter={["category", "subcategory"]}
+            viewLink="vendors"
           />
         )}
       </Box>

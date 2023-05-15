@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import {
   FormControl,
   FormLabel,
@@ -19,34 +19,37 @@ import { useCreateComplaint } from "../../../hooks/Complaints/useCreateComplaint
 import { objectToFormData } from "../../../utils/objectToFormData";
 
 const CreateComplaint = () => {
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [suggestion, setSuggestion] = useState<string>("");
-  const [images, setImages] = useState<File[]>([]);
   const { user } = useAuth();
   const { mutate, error, isSuccess } = useCreateComplaint();
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    suggestion: "",
+    submittedBy: user?.id,
+    organization: user?.organization?.id,
+    attachments: [],
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = objectToFormData({
-      title,
-      description,
-      submittedBy: user?.id,
-      organization: user?.organizationId,
-      ...(user?.role?.name === UserRole.ADMIN
-        ? { attachments: images }
-        : { suggestion }),
-    });
-
-    mutate(formData);
+    mutate(objectToFormData(formData));
 
     console.log("Form submitted with data:", formData);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newImages = Array.from(e.target.files as Iterable<File>);
-    setImages([...images, ...newImages] as File[]);
+    setFormData({
+      ...formData,
+      attachments: [...formData.attachments, ...newImages],
+    });
+  };
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -62,24 +65,28 @@ const CreateComplaint = () => {
             backButtonLink="complaints"
             pageTitle="Create New Complaint"
           />
+
           <CustomInput
             label="Title"
-            value={title}
-            setValue={setTitle}
+            name="title"
+            value={formData?.title}
+            handleChange={handleChange}
             placeholder="Title"
           />
           <CustomInput
             label="Description"
-            value={description}
-            setValue={setDescription}
+            name="description"
+            value={formData.description}
+            handleChange={handleChange}
             placeholder="Description"
             type="textarea"
           />
           {user?.role?.name === UserRole.EMPLOYEE && (
             <CustomInput
               label="Suggestions"
-              value={suggestion}
-              setValue={setSuggestion}
+              name="suggestion"
+              value={formData.suggestion}
+              handleChange={handleChange}
               placeholder="Suggestions"
               type="textarea"
             />
@@ -97,17 +104,17 @@ const CreateComplaint = () => {
                   id="file-input"
                   onChange={handleImageChange}
                 />
-                {images.length === 0 && (
+                {formData.attachments.length === 0 && (
                   <Button colorScheme="green" size="sm">
                     <label htmlFor="file-input">Choose files</label>
                   </Button>
                 )}
-                {images.length > 0 && (
+                {formData.attachments.length > 0 && (
                   <Button colorScheme="green" size="sm">
                     <label htmlFor="file-input">Add More</label>
                   </Button>
                 )}
-                {images.map((image, index) => (
+                {formData.attachments.map((image, index) => (
                   <Box
                     key={index}
                     m={5}
@@ -127,7 +134,12 @@ const CreateComplaint = () => {
                       colorScheme="green"
                       variant="ghost"
                       onClick={(e) =>
-                        setImages(images.filter((e) => e !== image))
+                        setFormData({
+                          ...formData,
+                          attachments: formData.attachments.filter(
+                            (e) => e !== image
+                          ),
+                        })
                       }
                     >
                       Delete

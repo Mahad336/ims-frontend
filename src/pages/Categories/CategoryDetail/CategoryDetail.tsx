@@ -9,7 +9,7 @@ import { useDeleteCategory } from "../../../hooks/Categories/useDeleteCategory";
 
 const CategoryDetail: FC = () => {
   const { id } = useParams();
-  const { category } = useCategory(id);
+  const { category, isError } = useCategory(id);
   const {
     vendors,
     itemStats,

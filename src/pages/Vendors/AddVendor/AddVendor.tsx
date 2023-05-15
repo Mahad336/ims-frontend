@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import {
   FormControl,
   FormLabel,
@@ -21,36 +21,33 @@ import { useAuth } from "../../../hooks/Auth/useAuth";
 import { useCreateVendor } from "../../../hooks/Vendors/useCreateVendor";
 
 const AddVendor = () => {
-  const [name, setName] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedSubcategories, setSelectedSubcategories] = useState<number[]>(
-    []
-  );
-
   const [showError, setShowError] = useState(false);
-  const { categories, isError } = useCategories();
+  const { categories } = useCategories();
   const { user } = useAuth();
   const { mutate, error } = useCreateVendor();
+  const [formData, setFormData] = useState({
+    name: "",
+    contact: "",
+    categories: "",
+    subcategories: [],
+    organization: user?.organizationId,
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
 
-    if (selectedSubcategories.length === 0) {
+    if (formData.subcategories.length === 0) {
       setShowError(true);
       return;
     }
 
-    const data = {
-      name,
-      contact: contactNumber,
-      categories: [Number(selectedCategory)],
-      subcategories: selectedSubcategories,
-      organization: user?.organizationId,
-    };
-    console.log("Form submitted with data:", data);
-    mutate(data);
+    mutate({ ...formData, categories: [Number(formData.categories)] });
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -66,30 +63,33 @@ const AddVendor = () => {
 
           <CustomInput
             label="Name"
-            value={name}
-            setValue={setName}
+            value={formData.name}
+            name="name"
+            handleChange={handleChange}
             placeholder="Name"
           />
 
           <CustomInput
             label="Contact Number"
-            value={contactNumber}
-            setValue={setContactNumber}
+            value={formData.contact}
+            name="contact"
+            handleChange={handleChange}
             placeholder="Contact Number"
           />
 
           {categories && (
             <CustomInput
               label="Category"
-              value={selectedCategory}
-              setValue={setSelectedCategory}
+              value={formData.categories}
+              name="categories"
+              handleChange={handleChange}
               placeholder="Select Category"
               type="select"
               options={categories.filter((c) => c.parentId === null)}
             />
           )}
 
-          {selectedCategory && (
+          {formData.categories && (
             <FormControl
               id="SubCategory"
               display="flex"
@@ -97,15 +97,20 @@ const AddVendor = () => {
             >
               <FormLabel width="20%">SubCategory</FormLabel>
               <CheckboxGroup
-                value={selectedSubcategories}
+                value={formData.subcategories}
                 onChange={(values) => {
-                  setSelectedSubcategories(values.map(Number));
+                  setFormData({
+                    ...formData,
+                    subcategories: values.map(Number),
+                  });
                   setShowError(false);
                 }}
               >
                 <HStack spacing="5" width="auto" rounded={10} color="gray.600">
                   {categories
-                    .filter((c) => c.parentId === Number(selectedCategory))
+                    ?.filter(
+                      (c) => c?.parentId === Number(formData?.categories)
+                    )
                     .map((sc) => (
                       <Checkbox key={sc.id} value={sc.id} colorScheme="gray">
                         {sc.name}

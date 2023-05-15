@@ -109,12 +109,14 @@ const EmployeeDetail: React.FC = () => {
                     <CustomizeableTable
                       heads={itemHeads}
                       data={mapItemData(item)}
+                      viewLink="inventory"
                     />
                   </TabPanel>
                   <TabPanel px={0} py={0}>
                     <CustomizeableTable
                       heads={requestHeads}
                       data={mapRequestData(requests)}
+                      viewLink="requests"
                     />
                   </TabPanel>
                 </TabPanels>

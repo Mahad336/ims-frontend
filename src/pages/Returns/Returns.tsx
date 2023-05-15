@@ -20,6 +20,7 @@ const Returns: React.FC = () => {
             data={returns}
             filterable
             selectFilter={["type", "status"]}
+            viewLink="returns"
           />
         )}
       </Box>

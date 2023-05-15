@@ -44,11 +44,6 @@ const Row = ({ category }: RowProps) => {
 
   const { deleteCategory } = useDeleteCategory();
 
-  const handleEdit = () => {
-    // handle edit action here
-    console.log(`Editing category ${category.id}`);
-  };
-
   const handleDelete = () => {
     deleteCategory(String(category?.id));
   };
@@ -87,6 +82,7 @@ const Row = ({ category }: RowProps) => {
             <CustomizeableTable
               heads={SubCategoryHeads}
               data={category.subCategories}
+              viewLink="categories"
             />
           </Collapse>
         </Td>

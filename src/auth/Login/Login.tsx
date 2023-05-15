@@ -16,13 +16,16 @@ import { useNavigate } from "react-router-dom";
 import { UserRole } from "../../constant/UserRoles";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const { mutate, isSuccess, data } = useLogin();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate({ email, password });
+    mutate(formData);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -70,10 +73,9 @@ const LoginPage = () => {
               <Input
                 type="email"
                 placeholder="Enter email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
+                value={formData?.email}
+                name="email"
+                onChange={handleInputChange}
               />
             </FormControl>
             <FormControl mt={6}>
@@ -82,11 +84,10 @@ const LoginPage = () => {
               </FormLabel>
               <Input
                 type="password"
+                name="password"
                 placeholder="Enter password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
+                value={formData?.password}
+                onChange={handleInputChange}
               />
             </FormControl>
             <Button

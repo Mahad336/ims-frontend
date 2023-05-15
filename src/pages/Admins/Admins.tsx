@@ -31,6 +31,7 @@ const Admins: React.FC = () => {
             data={users.map((user) => ({ ...user, src: showImage(user.src) }))}
             filterable
             selectFilter={["organization"]}
+            viewLink="admins"
           />
         )}
       </Box>

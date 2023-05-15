@@ -35,6 +35,7 @@ const EmployeeDashboard: React.FC = () => {
             <CustomizeableTable
               heads={complaintEmployeeHeads}
               data={complaints}
+              viewLink="complaints"
             />
           </Box>
         </Box>

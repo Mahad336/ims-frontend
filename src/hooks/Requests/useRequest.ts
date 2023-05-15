@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchRequest } from "../../services/Requests/requestsApi";
+import { useApiToast } from "../ApiResponseMessage/useToast";
 
 export const useRequest = (id: string) => {
+  const { showErrorToast } = useApiToast();
   const {
     data: request,
     isLoading,
@@ -9,7 +11,11 @@ export const useRequest = (id: string) => {
     isSuccess,
     refetch,
   } = useQuery(["request", id], () => fetchRequest(id), {
-    onSuccess(data) {},
+    onSettled(data, error) {
+      if (error) {
+        showErrorToast(error);
+      }
+    },
   });
   return {
     request,

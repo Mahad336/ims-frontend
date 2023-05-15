@@ -16,6 +16,7 @@ const queryClient = new QueryClient({
       refetchOnMount: false,
       staleTime: 30000,
       cacheTime: 30000,
+      retry: 1,
     },
   },
 });
@@ -26,7 +27,7 @@ root.render(
       <CookiesProvider>
         <App />
       </CookiesProvider>
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </QueryClientProvider>
   </ChakraProvider>
   // </React.StrictMode>

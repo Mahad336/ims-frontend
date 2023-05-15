@@ -11,7 +11,6 @@ export const useUpdateVendor = () => {
       onSuccess: (data) => {
         queryClient.refetchQueries(["vendors"]);
         navigate("/vendors");
-        console.log("succccccccessss");
       },
     }
   );

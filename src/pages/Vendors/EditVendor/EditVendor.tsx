@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import {
   FormControl,
   FormLabel,
@@ -23,51 +23,46 @@ import { useUpdateVendor } from "../../../hooks/Vendors/useUpdateVendor";
 import { useParams } from "react-router-dom";
 import { useVendor } from "../../../hooks/Vendors/useVendor";
 
-const EditVendor = () => {
+const AddVendor = () => {
+  const [showError, setShowError] = useState(false);
+  const { categories } = useCategories();
+  const { user } = useAuth();
+  const { mutate, error } = useUpdateVendor();
+  const [formData, setFormData] = useState({
+    name: "",
+    contact: "",
+    categories: "",
+    subcategories: [],
+    organization: user?.organizationId,
+  });
   const { id } = useParams();
   const { vendor } = useVendor(id);
-  const [name, setName] = useState<string>("");
-  const [contactNumber, setContactNumber] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedSubcategories, setSelectedSubcategories] = useState<number[]>(
-    []
-  );
-
-  const [showError, setShowError] = useState(false);
-  const { categories, isError } = useCategories();
-  const { user } = useAuth();
-  const { mutate } = useUpdateVendor();
-
-  useEffect(() => {
-    if (vendor) {
-      setName(vendor.name);
-      setContactNumber(vendor.contact);
-      setSelectedCategory(vendor?.categories[0]?.id);
-      setSelectedSubcategories(
-        vendor?.subcategories.map((subcategory) => subcategory?.id)
-      );
-    }
-  }, [vendor]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
 
-    if (selectedSubcategories.length === 0) {
+    if (formData.subcategories.length === 0) {
       setShowError(true);
       return;
     }
 
-    const data = {
-      name,
-      contact: contactNumber,
-      categories: [Number(selectedCategory)],
-      subcategories: selectedSubcategories,
-      organization: user?.organizationId,
-    };
-    console.log("Form submitted with data:", data);
-    mutate({ id, data });
+    mutate({
+      id,
+      data: { ...formData, categories: [Number(formData.categories)] },
+    });
   };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    if (vendor) {
+      setFormData(vendor);
+    }
+  }, [vendor]);
 
   return (
     <Box bg="whiteAlpha.900 " p="5" rounded={10}>
@@ -82,30 +77,33 @@ const EditVendor = () => {
 
           <CustomInput
             label="Name"
-            value={name}
-            setValue={setName}
+            value={formData.name}
+            name="name"
+            handleChange={handleChange}
             placeholder="Name"
           />
 
           <CustomInput
             label="Contact Number"
-            value={contactNumber}
-            setValue={setContactNumber}
+            value={formData.contact}
+            name="contact"
+            handleChange={handleChange}
             placeholder="Contact Number"
           />
 
           {categories && (
             <CustomInput
               label="Category"
-              value={selectedCategory}
-              setValue={setSelectedCategory}
+              value={formData.categories}
+              name="categories"
+              handleChange={handleChange}
               placeholder="Select Category"
               type="select"
               options={categories.filter((c) => c.parentId === null)}
             />
           )}
 
-          {selectedCategory && (
+          {formData.categories && (
             <FormControl
               id="SubCategory"
               display="flex"
@@ -113,16 +111,21 @@ const EditVendor = () => {
             >
               <FormLabel width="20%">SubCategory</FormLabel>
               <CheckboxGroup
-                value={selectedSubcategories}
+                value={formData.subcategories}
                 onChange={(values) => {
-                  setSelectedSubcategories(values.map(Number));
+                  setFormData({
+                    ...formData,
+                    subcategories: values.map(Number),
+                  });
                   setShowError(false);
                 }}
               >
                 <HStack spacing="5" width="auto" rounded={10} color="gray.600">
                   {categories
-                    ?.filter((c) => c.parentId === Number(selectedCategory))
-                    ?.map((sc) => (
+                    ?.filter(
+                      (c) => c?.parentId === Number(formData?.categories)
+                    )
+                    .map((sc) => (
                       <Checkbox key={sc.id} value={sc.id} colorScheme="gray">
                         {sc.name}
                       </Checkbox>
@@ -151,4 +154,4 @@ const EditVendor = () => {
   );
 };
 
-export default EditVendor;
+export default AddVendor;

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, ChangeEvent } from "react";
 import {
   FormControl,
   FormLabel,
@@ -42,21 +42,26 @@ const CreateEmployee: FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const { mutate } = useCreateUser();
   const { user } = useAuth();
+  const [formData, setFormData] = useState({
+    name: "",
+    department: "",
+    email: "",
+    password: "",
+    contact: "",
+    imageFile: null,
+    organization: user?.organizationId,
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
-
-    const data = {
-      name,
-      email,
-      password,
-      contact,
-      organization: user?.organizationId,
-      imageFile: image,
-    };
-    mutate(data);
-    console.log("Form submitted with data:", data);
+    mutate(formData);
+    console.log("Form submitted with data:", formData);
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -75,37 +80,42 @@ const CreateEmployee: FC = () => {
 
           <ImageUpload
             name={"Employee's Picture"}
-            onImageChange={(e) => setImage(e.target.files?.[0])}
+            onImageChange={(e) =>
+              setFormData({ ...formData, imageFile: e.target.files?.[0] })
+            }
           />
 
           <CustomInput
             label="Name"
-            value={name}
+            value={formData.name}
+            name="name"
             placeholder="Full Name"
-            setValue={setName}
+            handleChange={handleChange}
           />
 
           <CustomInput
+            name="department"
             label="Department"
-            value={department}
+            value={formData.department}
             placeholder="Select Department"
             type="select"
             options={departments}
-            setValue={setDepartment}
+            handleChange={handleChange}
+            useNameAsValue
           />
 
           <CustomInput
+            name="contact"
             label="Contact Number"
-            value={contact}
+            value={formData.contact}
             placeholder="Representative Contact"
-            setValue={setContact}
+            handleChange={handleChange}
           />
 
           <CredentialForm
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
+            email={formData.email}
+            password={formData.password}
+            handleChange={handleChange}
           />
 
           <Spacer></Spacer>

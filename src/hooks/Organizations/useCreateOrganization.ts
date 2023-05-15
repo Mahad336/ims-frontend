@@ -12,7 +12,6 @@ export const useCreateOrganization = () => {
       onSuccess: (data) => {
         queryClient.refetchQueries(["organizations"]);
         navigate("/organizations");
-        console.log("succccccccessss");
       },
     }
   );

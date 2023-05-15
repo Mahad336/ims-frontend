@@ -3,55 +3,47 @@ import { VStack } from "@chakra-ui/react";
 import CustomInput from "../CustomInput/CustomInput";
 
 interface AddressProps {
-  address: string;
-  setAddress: (value: string) => void;
-  city: string;
-  setCity: (value: string) => void;
-  selectedCountry: string;
-  setSelectedCountry: (value: string) => void;
-  countries: { id: string; name: string }[];
-  zipCode: string;
-  setZipCode: (value: string) => void;
+  countries?: { id: string; name: string }[];
+  handleChange?: (value) => void;
+  formData?: any;
 }
 
 export default function AddressInputs({
-  address,
-  setAddress,
-  city,
-  setCity,
-  selectedCountry,
-  setSelectedCountry,
   countries,
-  zipCode,
-  setZipCode,
+  handleChange,
+  formData,
 }: AddressProps) {
   return (
     <VStack spacing={6}>
       <CustomInput
         label="Address"
-        value={address}
-        setValue={setAddress}
+        name="address"
+        value={formData.address}
         placeholder="Address"
+        handleChange={handleChange}
       />
       <CustomInput
         isRequired={false}
-        value={city}
-        setValue={setCity}
+        name="city"
+        value={formData.city}
         placeholder="City"
+        handleChange={handleChange}
       />
       <CustomInput
+        name="country"
         isRequired={false}
-        value={selectedCountry}
-        setValue={setSelectedCountry}
+        value={formData.country}
         placeholder="Select Country"
         type="select"
         options={countries}
+        handleChange={handleChange}
       />
       <CustomInput
+        name="zip"
         isRequired={false}
-        value={zipCode}
-        setValue={setZipCode}
+        value={formData.zip}
         placeholder="Zip Code"
+        handleChange={handleChange}
       />
     </VStack>
   );

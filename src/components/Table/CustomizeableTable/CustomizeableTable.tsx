@@ -27,6 +27,7 @@ type TableProps = {
   data: any[];
   filterable?: boolean;
   selectFilter?: string[];
+  viewLink?: string;
 };
 
 type FilterProps = {
@@ -51,6 +52,7 @@ const CustomizeableTable: React.FC<TableProps> = ({
   data,
   filterable = false,
   selectFilter = [],
+  viewLink,
 }) => {
   const [filter, setFilter] = useState("");
   const [selectFilters, setSelectFilters] = useState<{ [key: string]: string }>(
@@ -150,7 +152,11 @@ const CustomizeableTable: React.FC<TableProps> = ({
                 ))}
                 {heads.includes("Action") && (
                   <Td key="Action" fontSize="small">
-                    <Link as={RouterLink} color="blue.400" to={`${item.id}`}>
+                    <Link
+                      as={RouterLink}
+                      color="blue.400"
+                      to={`/${viewLink}/${item.id}`}
+                    >
                       View
                     </Link>
                   </Td>

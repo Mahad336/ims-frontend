@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchItem } from "../../services/Inventory/inventoryApi";
+import { useApiToast } from "../ApiResponseMessage/useToast";
 export const useItem = (id: string) => {
+  const { showErrorToast } = useApiToast();
   const {
     data: item,
     isLoading,
@@ -8,8 +10,10 @@ export const useItem = (id: string) => {
     isSuccess,
     refetch,
   } = useQuery(["item", id], () => fetchItem(id), {
-    onSuccess(data) {
-      console.log(data);
+    onSettled(data, error) {
+      if (error) {
+        showErrorToast(error);
+      }
     },
   });
   return {

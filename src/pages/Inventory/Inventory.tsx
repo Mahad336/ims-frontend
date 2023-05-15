@@ -31,6 +31,7 @@ const Inventory: React.FC = () => {
             data={items}
             filterable
             selectFilter={["name", "category", "subCategory"]}
+            viewLink="inventory"
           />
         )}
       </Box>

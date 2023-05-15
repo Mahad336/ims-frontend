@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import {
   FormControl,
   FormLabel,
@@ -18,7 +18,6 @@ import AddressInputs from "../../../components/Form/AddressInputs/AddressInputs"
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
 import { AllCountries } from "../../../constant/AllCountries";
-import { useCreateOrganization } from "../../../hooks/Organizations/useCreateOrganization";
 import { useUpdateOrganization } from "../../../hooks/Organizations/useUpdateOrganization";
 import { objectToFormData } from "../../../utils/objectToFormData";
 import { useOrganization } from "../../../hooks/Organizations/useOrganization";
@@ -29,18 +28,20 @@ type Country = {
 };
 
 const countries: Country[] = AllCountries;
-const EditOrganization = () => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [bio, setBio] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [zipCode, setZipCode] = useState<string>("");
-  const [selectedCountry, setSelectedCountry] = useState<string>("");
-  const [repName, setRepName] = useState<string>("");
-  const [repContact, setRepContact] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
+const CreateOrganization = () => {
   const { mutate, error, isSuccess } = useUpdateOrganization();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    bio: "",
+    address: "",
+    city: "",
+    country: "",
+    zip: "",
+    representativeName: "",
+    representativeContact: " ",
+    image: null,
+  });
   const { id } = useParams();
   const { organization } = useOrganization(id);
 
@@ -48,37 +49,18 @@ const EditOrganization = () => {
     // TODO: handle form submission
     e.preventDefault();
 
-    const data = {
-      name,
-      email,
-      bio,
-      address,
-      city,
-      selectedCountry,
-      country: selectedCountry,
-      zip: zipCode,
-      representativeName: repName,
-      representativeContact: repContact,
-      image,
-    };
-
-    mutate({ id, orgData: objectToFormData(data) });
+    console.log(formData);
+    mutate({ id, orgData: objectToFormData(formData) });
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
-    if (organization) {
-      setName(organization.name);
-      setEmail(organization.email);
-      setBio(organization.bio);
-      setAddress(organization.address);
-      setCity(organization.city);
-      setSelectedCountry(organization.country);
-      setZipCode(organization.zip);
-      setRepName(organization.representativeName);
-      setRepContact(organization.representativeContact);
-    }
+    organization && setFormData(organization);
   }, [organization]);
-
   return (
     <Box bg="whiteAlpha.900 " p="5" rounded={10}>
       <form action="submit" onSubmit={handleSubmit}>
@@ -90,62 +72,61 @@ const EditOrganization = () => {
         >
           <FormToolbar
             backButtonLink="organizations"
-            pageTitle="Update Organization"
+            pageTitle="Create New Organization"
           ></FormToolbar>
-
           {organization && (
             <ImageUpload
               name={"Organization's Logo"}
-              onImageChange={(e) => setImage(e.target.files?.[0])}
+              onImageChange={(e) =>
+                setFormData({ ...formData, image: e.target.files?.[0] })
+              }
               src={organization?.image}
             />
           )}
-
           <CustomInput
+            value={formData.name}
             label="Name of Organization"
-            value={name}
-            setValue={setName}
+            name="name"
             placeholder="Name of Organization"
+            handleChange={handleChange}
           />
           <CustomInput
+            value={formData.email}
             label="Email"
-            value={email}
-            setValue={setEmail}
+            name="email"
             placeholder="Email"
+            handleChange={handleChange}
           />
 
           <CustomInput
+            value={formData.bio}
             label="Bio"
-            value={bio}
-            setValue={setBio}
+            name="bio"
             placeholder="Bio"
             type="textarea"
+            handleChange={handleChange}
           />
 
           <AddressInputs
-            address={address}
-            setAddress={setAddress}
-            city={city}
-            setCity={setCity}
-            selectedCountry={selectedCountry}
-            setSelectedCountry={setSelectedCountry}
             countries={countries}
-            zipCode={zipCode}
-            setZipCode={setZipCode}
+            handleChange={handleChange}
+            formData={formData}
           />
 
           <CustomInput
+            value={formData.representativeName}
+            name="representativeName"
             label="Representative Name"
-            value={repName}
-            setValue={setRepName}
             placeholder="Representative Name"
+            handleChange={handleChange}
           />
 
           <CustomInput
+            value={formData.representativeContact}
+            name="representativeContact"
             label="Representative Contact"
-            value={repContact}
-            setValue={setRepContact}
             placeholder="Representative Contact"
+            handleChange={handleChange}
           />
 
           <Spacer></Spacer>
@@ -154,5 +135,4 @@ const EditOrganization = () => {
     </Box>
   );
 };
-
-export default EditOrganization;
+export default CreateOrganization;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import {
   FormControl,
   FormLabel,
@@ -23,35 +23,40 @@ import { useVendors } from "../../../hooks/Vendors/useVendors";
 import { useCreateItem } from "../../../hooks/Inventory/useCreateItem";
 
 const CreateItem = () => {
-  const [itemName, setItemName] = useState<string>("");
-  const [serialNumber, setSerialNumber] = useState<string>("");
-  const [price, setPrice] = useState<number | string>("");
-  const [description, setDescription] = useState<string>("");
-  const [selectedVendor, setSelectedVendor] = useState<string>("");
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const { user } = useAuth();
   const { categories } = useCategories();
   const { vendors } = useVendors();
   const { mutate, isSuccess, error } = useCreateItem();
 
+  const [formData, setFormData] = useState({
+    name: "",
+    serialNumber: "",
+    unitPrice: "",
+    currentPrice: "",
+    vendor: "",
+    description: "",
+    category: "",
+    subcategory: "",
+    organization: user?.organizationId,
+  });
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
 
-    const data = {
-      name: itemName,
-      serialNumber,
-      unitPrice: Number(price),
-      currentPrice: Number(price),
-      vendor: Number(selectedVendor),
-      description,
-      category: Number(selectedCategory),
-      subcategory: Number(selectedSubCategory),
-      organization: user?.organizationId,
-    };
-    mutate(data);
-    console.log("Form submitted with data:", data);
+    mutate({
+      ...formData,
+      unitPrice: Number(formData.unitPrice),
+      currentPrice: Number(formData.unitPrice),
+      vendor: Number(formData.vendor),
+      category: Number(formData.category),
+      subcategory: Number(formData.subcategory),
+    });
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -70,70 +75,77 @@ const CreateItem = () => {
 
           <CustomInput
             label="Item Name"
-            value={itemName}
-            setValue={setItemName}
+            value={formData.name}
+            name="name"
+            handleChange={handleChange}
             placeholder="Item Name"
           />
 
           <CustomInput
             label="Serial Number"
-            value={serialNumber}
-            setValue={setSerialNumber}
+            name="serialNumber"
+            value={formData.serialNumber}
+            handleChange={handleChange}
             placeholder="Serial Number"
           />
 
           <CustomInput
             label="Description"
-            value={description}
-            setValue={setDescription}
+            name="description"
+            value={formData.description}
+            handleChange={handleChange}
             placeholder="Description"
             type="textarea"
           />
           {vendors && (
             <CustomInput
               label="Select Vendor"
-              value={selectedVendor}
-              setValue={setSelectedVendor}
+              value={formData.vendor}
+              name="vendor"
+              handleChange={handleChange}
               placeholder="Select Vendor"
               type="select"
               options={vendors}
             />
           )}
 
-          {categories && selectedVendor && vendors && (
+          {categories && formData.vendor && vendors && (
             <CustomInput
               label="Category"
-              value={selectedCategory}
-              setValue={setSelectedCategory}
+              value={formData.category}
+              handleChange={handleChange}
+              name="category"
               placeholder="Select Category"
               type="select"
               options={categories?.filter(
                 (c) =>
                   c?.parentId == null &&
                   vendors
-                    ?.find((vendor) => vendor?.id == Number(selectedVendor))
+                    ?.find((vendor) => vendor?.id == Number(formData?.vendor))
                     ?.categories?.includes(c?.id)
               )}
             />
           )}
 
-          {selectedCategory && (
+          {formData.category && (
             <CustomInput
               label="Sub Category"
-              value={selectedSubCategory}
-              setValue={setSelectedSubCategory}
+              value={formData.subcategory}
+              name="subcategory"
+              handleChange={handleChange}
               placeholder="Select SubCategory"
               type="select"
               options={categories.filter(
-                (c) => c.parentId === Number(selectedCategory)
+                (c) => c.parentId === Number(formData.category)
               )}
             />
           )}
 
           <CustomInput
             label="Price"
-            value={price}
-            setValue={setPrice}
+            name="unitPrice"
+            value={formData.unitPrice}
+            handleChange={handleChange}
             placeholder="Price"
           />
           <Spacer></Spacer>

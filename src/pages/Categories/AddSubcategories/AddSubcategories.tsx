@@ -1,55 +1,65 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import {
   VStack,
   StackDivider,
   Spacer,
   Box,
-  Flex,
   Button,
   Text,
   Heading,
+  Flex,
 } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import FormToolbar from "../../../components/Form/FormToolbar/FormToolbar";
 import CustomInput from "../../../components/Form/CustomInput/CustomInput";
 import { useAuth } from "../../../hooks/Auth/useAuth";
 import { useCreateCategory } from "../../../hooks/Categories/useCreateCategory";
-import { useUpdateCategory } from "../../../hooks/Categories/useUpdateCategory";
 import { useCategory } from "../../../hooks/Categories/useCategory";
+import { useUpdateCategory } from "../../../hooks/Categories/useUpdateCategory";
 
-const AddCategories = () => {
-  const [subCategories, setSubCategories] = useState<string[]>([""]);
+const AddSubCategories = () => {
   const { user } = useAuth();
   const { mutate, isSuccess, error } = useUpdateCategory();
+  const [formData, setFormData] = useState({
+    name: "",
+    subcategories: [],
+    organization: user?.organizationId,
+  });
   const { id } = useParams();
   const { category } = useCategory(id);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = {
-      subCategories,
-      organization: user?.organizationId,
-    };
-    mutate({ id, categoryData: data });
-    console.log("Form submitted with data:", data);
+    mutate({ id, categoryData: formData });
+    console.log("Form submitted with data:", formData);
   };
 
   const handleAddSubCategory = () => {
-    setSubCategories([...subCategories, ""]);
+    setFormData({
+      ...formData,
+      subcategories: [...formData.subcategories, ""],
+    });
   };
 
   const handleSubCategoryChange = (index: number, value: string) => {
-    const newSubCategories = [...subCategories];
-    newSubCategories[index] = value;
-    setSubCategories(newSubCategories);
+    const newsubcategories = [...formData.subcategories];
+    newsubcategories[index] = value;
+    setFormData({ ...formData, subcategories: newsubcategories });
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
     if (category) {
-      setSubCategories(
-        category.subcategories.map((subcategory) => subcategory.name)
-      );
+      setFormData({
+        ...formData,
+        name: category.name,
+        subcategories: category?.subcategories?.map((sc) => sc?.name),
+      });
     }
   }, [category]);
 
@@ -64,7 +74,7 @@ const AddCategories = () => {
         >
           <FormToolbar
             backButtonLink="/categories"
-            pageTitle="Add Sub-categories"
+            pageTitle="Add Sub Category"
           />
           <Flex>
             <Text width="20%" fontWeight={"semibold"}>
@@ -74,12 +84,14 @@ const AddCategories = () => {
           </Flex>
 
           <Heading fontWeight="medium">Sub-Categories</Heading>
-          {subCategories.map((subCategory, index) => (
+          {formData.subcategories.map((subCategory, index) => (
             <CustomInput
               key={index}
               label={`Sub-Category ${index + 1}`}
               value={subCategory}
-              setValue={(value) => handleSubCategoryChange(index, value)}
+              handleChange={(e) =>
+                handleSubCategoryChange(index, e.target.value)
+              }
               placeholder={`Sub-Category ${index + 1}`}
             />
           ))}
@@ -98,4 +110,4 @@ const AddCategories = () => {
   );
 };
 
-export default AddCategories;
+export default AddSubCategories;

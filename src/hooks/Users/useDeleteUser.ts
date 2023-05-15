@@ -2,28 +2,34 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteUser } from "../../services/Users/userApi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Auth/useAuth";
-import { UserRole } from "../../constant/UserRoles";
+import { UserRole, UserRoleId } from "../../constant/UserRoles";
+import { useApiToast } from "../ApiResponseMessage/useToast";
 
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { showErrorToast, showSuccessToast } = useApiToast();
   const { user: currentUser } = useAuth();
 
   const { mutate, isLoading, isError, error } = useMutation(deleteUser, {
-    onSuccess: () => {
-      // Invalidate and refetch vendor queries
-      queryClient.refetchQueries(["users"]);
-      navigate(
-        currentUser?.role?.name === UserRole.ADMIN ? "/admins" : "/employees"
-      );
-    },
-    onError: (err) => {
-      console.error(err);
+    onSettled(data, error) {
+      if (data && currentUser) {
+        showSuccessToast("User Updated Successfuly");
+        queryClient.refetchQueries(["users"]);
+        navigate(
+          currentUser?.roleId === UserRoleId.SUPER_ADMIN
+            ? "/admins"
+            : "/employees"
+        );
+      }
+      if (error) {
+        showErrorToast(error);
+      }
     },
   });
 
   const deleteUserFn = async (id: string) => {
-    await mutate(id);
+    mutate(id);
   };
 
   return {

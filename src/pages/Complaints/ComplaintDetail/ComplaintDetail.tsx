@@ -61,6 +61,7 @@ const ComplaintDetail: FC<Props> = () => {
             rounded="xl"
             size={"sm"}
             onClick={handleResolveComplaint}
+            isDisabled={status === "resolved"}
           >
             Mark as Resolved
           </Button>

@@ -115,6 +115,7 @@ const OrganizationDetail: React.FC = () => {
                             (user) => user?.roleId === 2
                           )
                         )}
+                        viewLink="admins"
                       />
                     </Box>
                   </TabPanel>

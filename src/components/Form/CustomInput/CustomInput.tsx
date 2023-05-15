@@ -8,58 +8,60 @@ import {
 } from "@chakra-ui/react";
 
 interface CustomInputProps {
+  name?: string;
   label?: string;
-  value: string | number;
-  setValue: (value: string) => void;
+  value?: string | number;
+
+  setValue?: (value: string) => void;
   placeholder: string;
   type?: "input" | "textarea" | "select";
   options?: { id: number | string; name: string }[];
   minHeight?: [string, string, string];
   isRequired?: boolean;
   useNameAsValue?: boolean;
+  handleChange?: any;
 }
 
 export default function CustomInput({
+  name,
   label,
   value,
-  setValue,
   placeholder,
   type = "input",
   options = [],
   minHeight = ["30px", "70px", "160px"],
   isRequired = true,
   useNameAsValue = false,
-}: CustomInputProps) {
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setValue(e.target.value);
-  };
 
+  handleChange,
+}: CustomInputProps) {
   const InputComponent =
     type === "textarea" ? Textarea : type === "select" ? Select : Input;
 
   return (
     <FormControl display="flex" alignItems="baseline" isRequired={isRequired}>
+      {}
       <FormLabel width="20%">{label}</FormLabel>
       {type !== "select" ? (
         <InputComponent
           focusBorderColor="gray.400"
           value={value}
           width="38%"
-          onChange={handleChange}
+          onChange={(e) => handleChange(e)}
           placeholder={placeholder}
           rounded={10}
           minHeight={type === "textarea" ? minHeight : ""}
+          name={name}
         />
       ) : (
         <InputComponent
           focusBorderColor="gray.400"
           value={value}
           width="38%"
-          onChange={handleChange}
+          onChange={(e) => handleChange(e)}
           placeholder={placeholder}
           rounded={10}
+          name={name}
         >
           {options.map((option) => (
             <option

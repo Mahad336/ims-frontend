@@ -91,6 +91,7 @@ const Complaints = () => {
                 data={adminData?.receivedComplaints ?? []}
                 selectFilter={["status"]}
                 filterable
+                viewLink="complaints"
               />
             </TabPanel>
             <TabPanel>
@@ -99,6 +100,7 @@ const Complaints = () => {
                 data={adminData?.submittedComplaints ?? []}
                 selectFilter={["status"]}
                 filterable
+                viewLink="complaints"
               />
             </TabPanel>
           </TabPanels>
@@ -116,6 +118,7 @@ const Complaints = () => {
               : []
           }
           filterable
+          viewLink="complaints"
         />
       )}
     </Box>

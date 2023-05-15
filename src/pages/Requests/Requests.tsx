@@ -36,6 +36,7 @@ const Requests: React.FC = () => {
             data={requests}
             filterable
             selectFilter={user.role === UserRole.ADMIN ? ["status"] : []}
+            viewLink="requests"
           />
         )}
       </Box>

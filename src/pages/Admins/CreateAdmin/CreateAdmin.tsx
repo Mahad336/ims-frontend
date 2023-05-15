@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import {
   FormControl,
   FormLabel,
@@ -20,29 +20,29 @@ import { useCreateUser } from "../../../hooks/Users/useCreateUser";
 import { useOrganizations } from "../../../hooks/Organizations/useOrganizations";
 
 const CreateAdmin = () => {
-  const [name, setName] = useState<string>("");
-  const [organization, setOrganization] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [contact, setContact] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
   const { organizations } = useOrganizations();
   const { mutate, isSuccess, error } = useCreateUser();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    organization: "",
+    contact: "",
+    imageFile: null,
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: handle form submission
     e.preventDefault();
 
-    const data = {
-      name,
-      email,
-      password,
-      organization,
-      contact,
-      imageFile: image,
-    };
-    mutate(data);
-    console.log("Form submitted with data:", data);
+    mutate(formData);
+    console.log("Form submitted with data:", formData);
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -61,37 +61,41 @@ const CreateAdmin = () => {
 
           <ImageUpload
             name={"Admin Profile Picture"}
-            onImageChange={(e) => setImage(e.target.files?.[0])}
+            onImageChange={(e) =>
+              setFormData({ ...formData, imageFile: e.target.files?.[0] })
+            }
           />
 
           <CustomInput
+            name="name"
             label="Name"
-            value={name}
+            value={formData?.name}
             placeholder="Full Name"
-            setValue={setName}
+            handleChange={handleChange}
           />
           {organizations && (
             <CustomInput
               label="Organization"
-              value={organization}
+              name="organization"
+              value={formData?.organization}
               placeholder="Select Organization"
               type="select"
               options={organizations}
-              setValue={setOrganization}
+              handleChange={handleChange}
             />
           )}
           <CustomInput
+            name="contact"
             label="Contact Number"
-            value={contact}
+            value={formData.contact}
             placeholder="Contact"
-            setValue={setContact}
+            handleChange={handleChange}
           />
 
           <CredentialForm
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
+            email={formData.email}
+            password={formData.password}
+            handleChange={handleChange}
           />
 
           <Spacer></Spacer>

@@ -11,7 +11,6 @@ export const useCreateItem = () => {
       onSuccess: (data) => {
         queryClient.refetchQueries(["items"]);
         navigate("/inventory");
-        console.log("succccccccessss");
       },
     }
   );

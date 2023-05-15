@@ -1,10 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteItem } from "../../services/Inventory/inventoryApi";
 import { useNavigate } from "react-router-dom";
+import { useApiToast } from "../ApiResponseMessage/useToast";
 
 export const useDeleteItem = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { showSuccessToast, showErrorToast } = useApiToast();
 
   const { mutate, isLoading, isError, error } = useMutation(deleteItem, {
     onSuccess: () => {
@@ -12,8 +14,13 @@ export const useDeleteItem = () => {
       navigate("/inventory");
       queryClient.refetchQueries(["items"]);
     },
-    onError: (err) => {
-      console.error(err);
+    onSettled(data, error) {
+      if (data) {
+        showSuccessToast("Item Deleted Successfuly");
+      }
+      if (error) {
+        showErrorToast(error);
+      }
     },
   });
 

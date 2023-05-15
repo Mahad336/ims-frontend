@@ -35,6 +35,7 @@ const SuperAdminDashboard: React.FC = () => {
             <CustomizeableTable
               heads={complaintSuperAdminHeads}
               data={complaints}
+              viewLink="complaints"
             />
           </Box>
         )}

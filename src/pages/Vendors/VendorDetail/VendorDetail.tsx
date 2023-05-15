@@ -62,7 +62,11 @@ const VendorDetail: FC = () => {
             <Text fontWeight={"medium"} fontSize="l">
               Recent Orders
             </Text>
-            <CustomizeableTable heads={itemHeads} data={mapItemData(items)} />
+            <CustomizeableTable
+              heads={itemHeads}
+              data={mapItemData(items)}
+              viewLink="inventory"
+            />
           </>
         </VStack>
       )}

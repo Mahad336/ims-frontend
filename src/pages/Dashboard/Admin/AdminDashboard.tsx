@@ -56,6 +56,7 @@ const AdminDashboard: React.FC = () => {
             <CustomizeableTable
               heads={complaintAdminHeads}
               data={complaints.receivedComplaints}
+              viewLink="complaints"
             />
           </Box>
         </Box>

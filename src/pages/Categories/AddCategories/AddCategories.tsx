@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent } from "react";
 import {
   VStack,
   StackDivider,
@@ -15,31 +15,37 @@ import { useAuth } from "../../../hooks/Auth/useAuth";
 import { useCreateCategory } from "../../../hooks/Categories/useCreateCategory";
 
 const AddCategories = () => {
-  const [name, setName] = useState<string>("");
-  const [subCategories, setSubCategories] = useState<string[]>([""]);
   const { user } = useAuth();
   const { mutate, isSuccess, error } = useCreateCategory();
+  const [formData, setFormData] = useState({
+    name: "",
+    subCategories: [],
+    organization: user?.organizationId,
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = {
-      name,
-      subCategories,
-      organization: user?.organizationId,
-    };
-    mutate(data);
-    console.log("Form submitted with data:", data);
+    mutate(formData);
+    console.log("Form submitted with data:", formData);
   };
 
   const handleAddSubCategory = () => {
-    setSubCategories([...subCategories, ""]);
+    setFormData({
+      ...formData,
+      subCategories: [...formData.subCategories, ""],
+    });
   };
 
   const handleSubCategoryChange = (index: number, value: string) => {
-    const newSubCategories = [...subCategories];
+    const newSubCategories = [...formData.subCategories];
     newSubCategories[index] = value;
-    setSubCategories(newSubCategories);
+    setFormData({ ...formData, subCategories: newSubCategories });
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -57,17 +63,20 @@ const AddCategories = () => {
           />
           <CustomInput
             label="Name"
-            value={name}
-            setValue={setName}
+            name="name"
+            value={formData.name}
+            handleChange={handleChange}
             placeholder="Name"
           />
           <Heading fontWeight="medium">Sub-Categories</Heading>
-          {subCategories.map((subCategory, index) => (
+          {formData.subCategories.map((subCategory, index) => (
             <CustomInput
               key={index}
               label={`Sub-Category ${index + 1}`}
               value={subCategory}
-              setValue={(value) => handleSubCategoryChange(index, value)}
+              handleChange={(e) =>
+                handleSubCategoryChange(index, e.target.value)
+              }
               placeholder={`Sub-Category ${index + 1}`}
             />
           ))}

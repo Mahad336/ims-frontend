@@ -30,6 +30,7 @@ const Employees: React.FC = () => {
             data={employees}
             filterable
             selectFilter={["department"]}
+            viewLink="employees"
           />
         )}
       </Box>
